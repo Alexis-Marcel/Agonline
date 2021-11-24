@@ -2,6 +2,8 @@ var socket = io();
 
 socket.on('chat message', receiveMessage);
 
+const msgerForm = get(".msger-inputarea");
+const msgerInput = get(".msger-input");
 const msgerChat = get(".msger-chat");
 
 
