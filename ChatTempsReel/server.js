@@ -1,7 +1,7 @@
 var express = require('express')
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var io = require('socket.io')(http); 
 
 const port = 80;
 
@@ -10,6 +10,8 @@ app.use(express.static(__dirname));
 app.get("/", function(req, res){
     res.sendFile(__dirname + '/index.html');
 })
+
+
 
 io.on('connection', function(socket){
     console.log('a user is connected');
@@ -26,5 +28,5 @@ io.on('connection', function(socket){
 })
 
 http.listen(port, function(){
-    console.log("Server running on "+port+" avec nodemon")
+    console.log("Server running on "+port);
 })
