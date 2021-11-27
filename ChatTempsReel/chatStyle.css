@@ -27,6 +27,13 @@ body {
   font-family: Helvetica, sans-serif;
 }
 
+.msger-header-options {
+  
+  display: inline-block;
+
+}
+
+
 .msger {
   display: flex;
   flex-flow: column wrap;
@@ -155,4 +162,8 @@ body {
 
 .msger-chat {
   background-color: #fcfcfe;
+}
+
+.msg-text{
+  word-wrap: break-word;  
 }
