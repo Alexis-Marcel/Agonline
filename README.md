@@ -2,6 +2,7 @@ Sujet 14 : Piccadilly Game
 
 Groupe S3A : Alexis MARCEL, Lilian LEBLANC, Justine PRULIERE
 
+reger
 -----------------------------------------------------------------------------------------------------------
 |                                                                                                           |     
 | Lien hébèrgement temporaire du projet : http://agonline.alwaysdata.net                                    | 
