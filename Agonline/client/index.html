@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <title>Agonline</title>
+  </head>
+  <body>
+    <div id="wrapper">
+      <header id="title">
+        <span>Bienvenue sur Agonline <i id="logo" class="fas fa-crow"></i></span>
+        <i id="logoutButton" class="fas fa-sign-out-alt" title="logout"></i>
+      </header>
+
+      <section id="loginForm" style="display: block;">
+        <p>
+          Actuellement <span id="userNumberLog">0</span> utilisateurs connectés dans le jeu.
+        </p>
+        <p id="loginAlert">Choissisez un nom pour pouvoir jouer.</p>
+        <p>
+          <form class="name-inputarea" action="/chat.html" >
+            <input type="text" id="nameInput" autocomplete="off" placeholder="Nom ..." />
+            <input type="submit" id="loginButton" value="Valider" />
+          </form>
+        </p>
+      </section>
+     
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type ="module" src="./log.js"></script>
+  </body>
+</html>
