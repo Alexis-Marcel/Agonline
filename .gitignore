@@ -35,7 +35,5 @@ hs_err_pid*
 /agonline/node_modules/*
 /Agonline/node_modules/*
 node_modules/*
-
-
 Agonline\node_modules\*
 \Agonline\node_modules\*
