@@ -33,5 +33,7 @@ hs_err_pid*
 
 # directory nodes modules
 /agonline/node_modules/*
+/Agonline/node_modules/*
+node_modules/*
 
 
