@@ -65,7 +65,7 @@ body {
 /* login form */
 
 #loginForm {
-   /* background-color: var(--roomColor);*/
+    /* background-color: var(--roomColor);*/
     padding: 10px var(--leftPad);
     color: var(--loginColor);
     position: absolute;
@@ -118,11 +118,11 @@ input[type="submit"]:hover {
 
 
 #chat{
-   
+
     float: right;
     height: calc(100vh - var(--titleHeight));
     display: flex;
-    
+
 }
 
 #switch {
@@ -140,15 +140,15 @@ input[type="submit"]:hover {
 }
 
 #button-chat {
-   
+
     padding-top: 110%;
     padding-bottom:110%;
 }
 
 
 #switch img {
-  width: 2em;
-  height: auto;
+    width: 2em;
+    height: auto;
 }
 
 
@@ -180,7 +180,7 @@ input[type="submit"]:hover {
     border-top: 1px solid var(--mainColor);
     padding: 20px 0px;
     overflow: auto;
-    word-wrap: break-word;  
+    word-wrap: break-word;
 }
 
 /* inputs */
@@ -211,4 +211,35 @@ input[type="submit"]:hover {
     font-size: 15px;
     color: var(--neutralColor);
     margin-right: 6px;
+}
+
+
+
+#jeu{
+    text-align: center;
+    color:#fff;
+}
+#reponse{
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    height:600px;
+    display:grid;
+    grid-template-columns: 600px 600px;
+    grid-row: auto;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
+}
+.rep{
+    border: solid 0.3em;
+    border-color:#333 ;
+    background-color:#333;
+    padding:20px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    font-family:sans-serif;
+
 }

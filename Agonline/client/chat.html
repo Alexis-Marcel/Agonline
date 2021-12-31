@@ -1,46 +1,61 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="./style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
-    />
-    <title>Agonline</title>
-  </head>
-  <body>
-    <div id="wrapper">
-      <header id="title">
-        <span>Bienvenue sur Agonline <i id="logo" class="fas fa-crow"></i></span>
-        <i id="logoutButton" class="fas fa-sign-out-alt" title="logout"></i>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="./style.css" />
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+  />
+  <title>Agonline</title>
+</head>
+<body>
+<div id="wrapper">
+  <header id="title">
+    <span>Bienvenue sur Agonline <i id="logo" class="fas fa-crow"></i></span>
+    <i id="logoutButton" class="fas fa-sign-out-alt" title="logout"></i>
+  </header>
+
+  <section id="chat">
+    <div id="switch" class = "switch"><div id="button-chat"><img id="img-chat" src="./switch.png"></div></div>
+    <div id="room">
+      <header id="roomHeader">
+        <p> Nombre d'utilisateurs connectés: <span id="userNumberChat">0</span></p>
+
       </header>
+      <section id="messages"></section>
+      <form class="msg-inputarea" id="inputs">
+        <input type="submit" id="messageSubmit" value="Envoyer" />
+        <input
+                type="text"
+                id="messageInput"
+                placeholder="Entrez votre message ..."
+        />
+  </section>
+</div>
 
-      <section id="chat">
-        <div id="switch" class = "switch"><div id="button-chat"><img id="img-chat" src="./switch.png"></div></div>
-        <div id="room">
-          <header id="roomHeader">
-            <p> Nombre d'utilisateurs connectés: <span id="userNumberChat">0</span></p>
+</section>
 
-          </header>
-          <section id="messages"></section>
-          <form class="msg-inputarea" id="inputs">
-            <input type="submit" id="messageSubmit" value="Envoyer" />
-            <input
-              type="text"
-              id="messageInput"
-              placeholder="Entrez votre message ..."
-            />
-          </section>
-        </div>
-        
-      </section>
+<section id="jeu">
+  <div id="temps"> </div>
+  <div id="question">
+    <p> Posez votre question</p>
+  </div>
+  <br>
+  <p >Reponse</p>
+  <div id="reponse">
+    <div class="rep" id="repA"> A:</div>
+    <div class="rep" id="repB"> B:</div>
+    <div class="rep" id="repC">  C:</div>
+    <div class="rep" id="repD">  D:</div>
+  </div>
+</section>
 
-     
-    </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type ="module" src="./client.js"></script>
-  </body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type ="module" src="./client.js"></script>
+
+</body>
 </html>
