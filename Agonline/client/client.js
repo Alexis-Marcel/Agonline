@@ -20,7 +20,8 @@ socket.on("login", () => {
     socket.on("serverMessage", displayMessage);
     socket.on("removeUser", removeUser);
     socket.on("kick", kick);
-    socket.on("bonneRep",displayRep)
+    socket.on("bonneRep",displayRep);
+    socket.on("timer",displayTime);
 });
 
 function kick() {
@@ -81,6 +82,18 @@ function displayRep(bonneRep){
     document.getElementById("r").innerText = "FAUX La bonne réponse était la réponse :"+ bonneRep.reponse;
 }
 
+function displayTime(timer){
+    let timeleft = timer.temps;
+        if (timeleft <= 0) {
+            document.getElementById("temps").innerHTML = "Finished";
+            window.addEventListener("click", function (event) {
+                event.stopImmediatePropagation();
+            }, true);
+            socket.emit("rep", reponse);
+        } else {
+            document.getElementById("temps").innerHTML = timeleft + " seconds remaining";
+        }
+}
 
 $('#button-chat').on( "click", function() {
     
@@ -111,20 +124,7 @@ var reponse;
     e3.addEventListener("click", () => changerStyle("repC"));
     e4.addEventListener("click", () => changerStyle("repD"));
 
-let timeleft = 10;
-const downloadTimer = setInterval(function () {
-    if (timeleft <= 0) {
-        clearInterval(downloadTimer);
-        document.getElementById("temps").innerHTML = "Finished";
-        window.addEventListener("click", function (event) {
-            event.stopImmediatePropagation();
-        }, true);
-        socket.emit("rep", reponse);
-    } else {
-        document.getElementById("temps").innerHTML = timeleft + " seconds remaining";
-    }
-    timeleft -= 1;
-}, 1000);
+
 
 function changerStyle(rep){
     document.getElementById("repA").style.borderColor = "#333";

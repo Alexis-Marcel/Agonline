@@ -37,6 +37,7 @@ io.on("connection", (socket) => {
     socket.on("rep",(text) => sendReponse(socket, text))
 });
 
+
 function addUser(socket, name) {
     socket.join("users");
     socket.emit("login");
@@ -120,3 +121,17 @@ function sendReponse(socket, text){
         reponse: "repA",
     }); //variable bonne rep a initialiser quand on change de quizz
 }
+let timeleft = 10;
+const downloadTimer = setInterval(function () {
+    if (timeleft <= 0) {
+        clearInterval(downloadTimer);
+        io.to("users").emit("timer", {
+            temps:timeleft,
+        })
+    } else {
+        io.to("users").emit("timer", {
+            temps:timeleft,
+        })
+    }
+    timeleft -= 1;
+}, 1000);
