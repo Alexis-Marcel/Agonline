@@ -34,6 +34,7 @@ io.on("connection", (socket) => {
     });
     socket.on("clientMessage", (text) => sendMessage(socket, text));
     socket.on("disconnect", () => removeSocket(socket));
+    socket.on("rep",(text) => sendReponse(socket, text))
 });
 
 function addUser(socket, name) {
@@ -110,4 +111,12 @@ function sendMessage(socket, text) {
             style: "normal",
         });
     }
+}
+
+function sendReponse(socket, text){
+    console.log("ça marche "+text);
+    io.emit("bonneRep", {
+        text: "bazlblablabla",
+        reponse: "repA",
+    }); //variable bonne rep a initialiser quand on change de quizz
 }

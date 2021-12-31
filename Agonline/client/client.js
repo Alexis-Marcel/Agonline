@@ -20,6 +20,7 @@ socket.on("login", () => {
     socket.on("serverMessage", displayMessage);
     socket.on("removeUser", removeUser);
     socket.on("kick", kick);
+    socket.on("bonneRep",displayRep)
 });
 
 function kick() {
@@ -73,6 +74,12 @@ function displayMessage(serverMessage) {
         });
 }
 
+function displayRep(bonneRep){
+    if(bonneRep.reponse === reponse){
+        document.getElementById("r").innerText = "BRAVO VOUS AVEZ LA BONNE REPONSE" + bonneRep.reponse;
+    }
+    document.getElementById("r").innerText = "FAUX La bonne réponse était la réponse :"+ bonneRep.reponse;
+}
 
 
 $('#button-chat').on( "click", function() {
@@ -91,17 +98,18 @@ $('#button-chat').on("mouseout",function() {
     $("#switch").toggleClass("switch-hover");
 });
 
+
 var reponse;
 
-const e1 = document.getElementById("repA");
-const e2 = document.getElementById("repB");
-const e3 = document.getElementById("repC");
-const e4 = document.getElementById("repD");
+    const e1 = document.getElementById("repA");
+    const e2 = document.getElementById("repB");
+    const e3 = document.getElementById("repC");
+    const e4 = document.getElementById("repD");
 
-e1.addEventListener("click", () => changerStyle("repA"));
-e2.addEventListener("click", () => changerStyle("repB"));
-e3.addEventListener("click", () => changerStyle("repC"));
-e4.addEventListener("click", () => changerStyle("repD"));
+    e1.addEventListener("click", () => changerStyle("repA"));
+    e2.addEventListener("click", () => changerStyle("repB"));
+    e3.addEventListener("click", () => changerStyle("repC"));
+    e4.addEventListener("click", () => changerStyle("repD"));
 
 let timeleft = 10;
 const downloadTimer = setInterval(function () {
@@ -112,7 +120,6 @@ const downloadTimer = setInterval(function () {
             event.stopImmediatePropagation();
         }, true);
         socket.emit("rep", reponse);
-        window.alert(reponse);
     } else {
         document.getElementById("temps").innerHTML = timeleft + " seconds remaining";
     }
