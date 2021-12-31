@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./style.css" />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <title>Agonline</title>
+</head>
+<body>
+<div id="wrapper">
+    <header id="title">
+        <span>Bienvenue sur Agonline <i id="logo" class="fas fa-crow"></i></span>
+        <i id="logoutButton" class="fas fa-sign-out-alt" title="logout"></i>
+    </header>
+</div>
+</section>
+
+<section id="jeu">
+    <div id="question">
+        <p> Posez votre question</p>
+    </div>
+    <br>
+    <p >Reponse:</p>
+    <div id="reponse">
+        <div class="rep"> A: reponse a</div>
+        <div class="rep"> B:reponse b</div>
+        <div class="rep"> C:reponse c</div>
+        <div class="rep"> D: reponse d</div>
+    </div>
+</section>
+
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script type ="module" src="./client.js"></script>
+</body>
+</html>
