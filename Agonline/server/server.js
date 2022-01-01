@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
 
             destination = "chat.html";
             socket.emit("checkLog", destination);
-            
+            startTimer();
         }
     });
     socket.on("clientMessage", (text) => sendMessage(socket, text));
@@ -115,23 +115,25 @@ function sendMessage(socket, text) {
 }
 
 function sendReponse(socket, text){
-    console.log("ça marche "+text);
     io.emit("bonneRep", {
         text: "bazlblablabla",
         reponse: "repA",
     }); //variable bonne rep a initialiser quand on change de quizz
 }
-let timeleft = 10;
-const downloadTimer = setInterval(function () {
-    if (timeleft <= 0) {
-        clearInterval(downloadTimer);
-        io.to("users").emit("timer", {
-            temps:timeleft,
-        })
-    } else {
-        io.to("users").emit("timer", {
-            temps:timeleft,
-        })
-    }
-    timeleft -= 1;
-}, 1000);
+
+function startTimer(){
+    let timeleft = 10;
+    const downloadTimer = setInterval(function () {
+        if (timeleft <= 0) {
+            clearInterval(downloadTimer);
+            io.to("users").emit("timer", {
+                temps:timeleft,
+            })
+        } else {
+            io.to("users").emit("timer", {
+                temps:timeleft,
+            })
+        }
+        timeleft -= 1;
+    }, 1000);
+}

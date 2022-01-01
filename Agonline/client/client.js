@@ -78,18 +78,17 @@ function displayMessage(serverMessage) {
 function displayRep(bonneRep){
     if(bonneRep.reponse === reponse){
         document.getElementById("r").innerText = "BRAVO VOUS AVEZ LA BONNE REPONSE" + bonneRep.reponse;
+    }else{
+        document.getElementById("r").innerText = "FAUX La bonne réponse était la réponse :"+ bonneRep.reponse;
     }
-    document.getElementById("r").innerText = "FAUX La bonne réponse était la réponse :"+ bonneRep.reponse;
 }
 
 function displayTime(timer){
     let timeleft = timer.temps;
         if (timeleft <= 0) {
             document.getElementById("temps").innerHTML = "Finished";
-            window.addEventListener("click", function (event) {
-                event.stopImmediatePropagation();
-            }, true);
             socket.emit("rep", reponse);
+           controller.abort();
         } else {
             document.getElementById("temps").innerHTML = timeleft + " seconds remaining";
         }
@@ -113,16 +112,16 @@ $('#button-chat').on("mouseout",function() {
 
 
 var reponse;
+const controller = new AbortController();
+const e1 = document.getElementById("repA");
+const e2 = document.getElementById("repB");
+const e3 = document.getElementById("repC");
+const e4 = document.getElementById("repD");
 
-    const e1 = document.getElementById("repA");
-    const e2 = document.getElementById("repB");
-    const e3 = document.getElementById("repC");
-    const e4 = document.getElementById("repD");
-
-    e1.addEventListener("click", () => changerStyle("repA"));
-    e2.addEventListener("click", () => changerStyle("repB"));
-    e3.addEventListener("click", () => changerStyle("repC"));
-    e4.addEventListener("click", () => changerStyle("repD"));
+e1.addEventListener("click", () => changerStyle("repA"),{signal: controller.signal});
+e2.addEventListener("click", () => changerStyle("repB"),{signal: controller.signal});
+e3.addEventListener("click", () => changerStyle("repC",),{signal: controller.signal});
+e4.addEventListener("click", () => changerStyle("repD"),{signal: controller.signal});
 
 
 
