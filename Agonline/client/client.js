@@ -77,9 +77,10 @@ function displayMessage(serverMessage) {
 
 function displayRep(bonneRep){
     if(bonneRep.reponse === reponse){
-        document.getElementById("r").innerText = "BRAVO VOUS AVEZ LA BONNE REPONSE" + bonneRep.reponse;
+        score++;
+        document.getElementById("r").innerText = "BRAVO vous avez la bonne réponse score: " + score;
     }else{
-        document.getElementById("r").innerText = "FAUX La bonne réponse était la réponse :"+ bonneRep.reponse;
+        document.getElementById("r").innerText = "FAUX La bonne réponse était la réponse :"+ bonneRep.reponse +" score : "+ score;
     }
 }
 
@@ -88,7 +89,7 @@ function displayTime(timer){
         if (timeleft <= 0) {
             document.getElementById("temps").innerHTML = "Finished";
             socket.emit("rep", reponse);
-           controller.abort();
+            controller.abort();
         } else {
             document.getElementById("temps").innerHTML = timeleft + " seconds remaining";
         }
@@ -112,24 +113,25 @@ $('#button-chat').on("mouseout",function() {
 
 
 var reponse;
+var score = 0;
 const controller = new AbortController();
-const e1 = document.getElementById("repA");
-const e2 = document.getElementById("repB");
-const e3 = document.getElementById("repC");
-const e4 = document.getElementById("repD");
+const e1 = document.getElementById("A");
+const e2 = document.getElementById("B");
+const e3 = document.getElementById("C");
+const e4 = document.getElementById("D");
 
-e1.addEventListener("click", () => changerStyle("repA"),{signal: controller.signal});
-e2.addEventListener("click", () => changerStyle("repB"),{signal: controller.signal});
-e3.addEventListener("click", () => changerStyle("repC",),{signal: controller.signal});
-e4.addEventListener("click", () => changerStyle("repD"),{signal: controller.signal});
+e1.addEventListener("click", () => changerStyle("A"),{signal: controller.signal});
+e2.addEventListener("click", () => changerStyle("B"),{signal: controller.signal});
+e3.addEventListener("click", () => changerStyle("C",),{signal: controller.signal});
+e4.addEventListener("click", () => changerStyle("D"),{signal: controller.signal});
 
 
 
 function changerStyle(rep){
-    document.getElementById("repA").style.borderColor = "#333";
-    document.getElementById("repB").style.borderColor = "#333";
-    document.getElementById("repC").style.borderColor = "#333";
-    document.getElementById("repD").style.borderColor = "#333";
+    document.getElementById("A").style.borderColor = "#333";
+    document.getElementById("B").style.borderColor = "#333";
+    document.getElementById("C").style.borderColor = "#333";
+    document.getElementById("D").style.borderColor = "#333";
     document.getElementById(rep).style.borderColor = "red";
     reponse = rep;
 }

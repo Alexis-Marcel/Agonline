@@ -117,7 +117,7 @@ function sendMessage(socket, text) {
 function sendReponse(socket, text){
     io.emit("bonneRep", {
         text: "bazlblablabla",
-        reponse: "repA",
+        reponse: "A",
     }); //variable bonne rep a initialiser quand on change de quizz
 }
 
