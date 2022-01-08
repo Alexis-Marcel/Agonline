@@ -8,70 +8,108 @@ app.use(express.static("client"));
 const socket = require("socket.io");
 const io = socket(server);
 const botName = "ChatBot";
+const CreatorName = "MASTER";
 
 module.exports = { io, botName };
 
-const { users, removeUser, getUserById, getUserByName, regExp } = require("./users.js");
+const { users, removeUser, getUserById, getUserByName, getUserByRoom, getNumberedUsersByRoom } = require("./users.js");
 const { checkValidName } = require("./name.js");
 const { getRandomColor } = require("./color.js");
+const { rooms, checkValidRoom } = require("./rooms.js");
 require("./spam.js");
 
 io.on("connection", (socket) => {
- 
-    io.emit("userNumber", users.length);
-    socket.on("loginAttempt", (name) => {
-           addUser(socket, name);
-        
-    });
-    socket.on("checkLog", (name) => {
-        if (checkValidName(name, socket, users)) {
 
+    /**
+     * envoie du nombre de participant dans la room
+     */
+    socket.on("userNumber", (room) => socket.emit("userNumber", getNumberedUsersByRoom(room)));
 
-            destination = "chat.html";
+    /**
+     * création d'une partie
+     */
+    socket.on("createur", (room) => createRoom(socket,room));   
+    
+    /**
+     * connexion du joueur sur la page gameRoom.html
+     */
+    socket.on("login", (name, room) => addUser(socket, name, room));
+
+    /**
+     * initialisation du nom du joueur dans la page joinGame.html
+     */
+    socket.on("checkLog", (name,room) => {
+        if (checkValidName(name,room, socket, users)) {
+            destination = "gameRoom.html?room=" + room;
             socket.emit("checkLog", destination);
-            startTimer();
         }
     });
+
+    /**
+     * initialisation de la partie que le joueur veut rejoindre dans la page joinRoom.html
+     */
+    socket.on("checkRoom", (room) => {
+        if (checkValidRoom(room, socket)) {
+            destination = "joinGame.html?room=" + room;
+            socket.emit("checkRoom", destination);       
+        }
+    });
+
+    socket.on("creatorMessage", (room,text) => creatorMessage(room, text));
     socket.on("clientMessage", (text) => sendMessage(socket, text));
     socket.on("disconnect", () => removeSocket(socket));
-    socket.on("rep",(text) => sendReponse(socket, text))
 });
 
 
-function addUser(socket, name) {
-    socket.join("users");
+function createRoom(socket, codeRoom) {
+    socket.join(codeRoom);
+    // ajout du code de la partie dans la liste des parties
+    const room = { codeRoom: codeRoom };
+    rooms.push(room);
+
+    socket.on("start", (room) => {
+        startTimer(room);
+        const set = {question: "Quelle est la capital de l'ouzbekistan ?", reponse: ["Paris", "Moscou", "Gontran", "Tachkent"], correct: "D"};
+        socket.emit("set",set);
+        io.to(room).emit("reponse",set.correct);
+    });   
+}
+
+function addUser(socket, name, room) {
+    socket.join(room);
     socket.emit("login");
-    io.to("users").emit("serverMessage", {
+    io.to(room).emit("serverMessage", {
         name: botName,
         text: `${name} est entré dans la salle !`,
         color: "white",
         style: "italic",
     });
-    for (const otherUser of users) {
-        socket.emit("user", otherUser);
-    }
-    const user = { id: socket.id, name: name, color: getRandomColor() };
+    //ajout du joueur dans la liste des joueurs de la partie
+    const user = { id: socket.id, name: name, room: room, color: getRandomColor() };
     users.push(user);
-    io.emit("userNumber", users.length);
-    io.to("users").emit("user", user);
+    io.to(room).emit("userNumber", getNumberedUsersByRoom(room));
 }
 
+/**
+ * suppresion du joueur dans la liste des joueurs de la partie
+ */
 function removeSocket(socket) {
-    console.log("deconnexion : " + socket.id)
     const user = getUserById(socket.id);
     if (!user) return;
-    io.to("users").emit("serverMessage", {
+    io.to(user.room).emit("serverMessage", {
         name: botName,
         text: `${user.name} a quitté la salle !`,
         color: "white",
         style: "italic",
     });
-    socket.leave("users");
+    socket.leave(user.room);
     removeUser(user);
-    io.emit("userNumber", users.length);
-    io.to("users").emit("removeUser", user);
+    io.to(user.room).emit("userNumber", getNumberedUsersByRoom(user.room));
 }
 
+/**
+ * envoie d'un message d'un joueur
+ */
 function sendMessage(socket, text) {
     if (text.length === 0) return;
     if (text.length > 280) {
@@ -80,6 +118,8 @@ function sendMessage(socket, text) {
             text: `You have to restrict your message to 280 characters!`,
             color: "white",
             style: "italic",
+            weight : "normal",
+
         });
         return;
     }
@@ -88,49 +128,41 @@ function sendMessage(socket, text) {
         console.log("erreur no name");
         return;
     } 
-    let recipients, sender;
-    const matches = text.match(regExp());
-    if (matches) {
-        recipients = [socket.id];
-        sender = `${user.name} (PM)`;
-        for (const match of matches) {
-            const privateName = match.substring(2, match.length - 1);
-            const privateUser = getUserByName(privateName);
-            if (privateUser && privateUser.id !== socket.id) {
-                recipients.push(privateUser.id);
-            }
-        }
-    } else {
-        recipients = ["users"];
-        sender = user.name;
-    }
-    for (const recipient of recipients) {
-        io.to(recipient).emit("serverMessage", {
-            name: sender,
+
+        io.to(user.room).emit("serverMessage", {
+            name: user.name,
             text: text,
             color: user.color,
             style: "normal",
+            weight : "normal",
+
         });
-    }
 }
 
-function sendReponse(socket, text){
-    io.emit("bonneRep", {
-        text: "bazlblablabla",
-        reponse: "A",
-    }); //variable bonne rep a initialiser quand on change de quizz
+/**
+ * envoie d'un message du createur
+ */
+function creatorMessage(room,text){
+
+    io.to(room).emit("serverMessage", {
+        name: CreatorName,
+        text: text,
+        color: "red",
+        style: "normal",
+        weight : "bold",
+    });
 }
 
-function startTimer(){
+function startTimer(room){
     let timeleft = 10;
     const downloadTimer = setInterval(function () {
         if (timeleft <= 0) {
             clearInterval(downloadTimer);
-            io.to("users").emit("timer", {
+            io.to(room).emit("timer", {
                 temps:timeleft,
             })
         } else {
-            io.to("users").emit("timer", {
+            io.to(room).emit("timer", {
                 temps:timeleft,
             })
         }

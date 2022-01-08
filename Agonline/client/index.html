@@ -1,38 +1,70 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="fr" class="h-100">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="./style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
-    />
-    <title>Agonline</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Agonline Game</title>
+
+    
+
+    <!-- Bootstrap core CSS -->
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="stylesheet/main.css" rel="stylesheet">
   </head>
-  <body>
-    <div id="wrapper">
-      <header id="title">
-        <span>Bienvenue sur Agonline <i id="logo" class="fas fa-crow"></i></span>
-        <i id="logoutButton" class="fas fa-sign-out-alt" title="logout"></i>
-      </header>
-
-      <section id="loginForm" style="display: block;">
-        <p>
-          Actuellement <span id="userNumberLog">0</span> utilisateurs connectés dans le jeu.
-        </p>
-        <p id="loginAlert">Choissisez un nom pour pouvoir jouer.</p>
-        <p>
-          <form class="name-inputarea" action="/chat.html" >
-            <input type="text" id="nameInput" autocomplete="off" placeholder="Nom ..." />
-            <input type="submit" id="loginButton" value="Valider" />
-          </form>
-        </p>
-      </section>
-     
+  <body class="d-flex h-100 text-center text-white bg-dark">
+    
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <header class="mb-auto">
+    <div>
+      <h3 class="float-md-start mb-0">Agonline</h3>
+      <nav class="nav nav-masthead justify-content-center float-md-end">
+        <a class="nav-link active" aria-current="page" href="#">Accueil</a>
+        <a class="nav-link" href="#">A propos</a>
+        <a class="nav-link" href="#">Nous contacter</a>
+      </nav>
     </div>
+  </header>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type ="module" src="./log.js"></script>
+  <main class="px-3">
+    <div class="row">
+      <div class="col col-12 col-md-6 p-5 p-md-2">
+        <a style="width:100%;" href="gameMaster.html" class="btn btn-lg btn-secondary btn-block fw-bold border-white bg-white"><img style="width: 100%; height:auto;" src="assets/images/projecteur.jpg">Créer un jeu</a>
+      </div>
+      <div class="col col-12 col-md-6 p-5 p-md-2">
+        
+        <a style="width:100%;" href="joinRoom.html" class="btn btn-lg btn-secondary btn-block fw-bold border-white bg-white"><img style="width: 100%; height:auto;" src="assets/images/mobile.png">Rejoindre un jeu</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="mt-auto text-white-50">
+    <p><strong>©</strong> Copyright 2021 : <strong>Alexis MARCEL</strong> - <strong>Justine PRULIERE</strong> - <strong>Lilian LEBLANC</strong</p>
+  </footer>
+</div>
+
+
+    
   </body>
 </html>

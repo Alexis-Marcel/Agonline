@@ -13,9 +13,19 @@ function getUserByName(name) {
     return users.find((user) => user.name === name);
 }
 
-function regExp() {
-    const regStr = users.map((x) => `\\[@${x.name}\\]`).join("|");
-    return RegExp(regStr, "g");
+function getUserByRoom(room) {
+    return users.find((user) => user.room === room);
 }
 
-module.exports = { users, removeUser, getUserById, getUserByName, regExp };
+function getNumberedUsersByRoom(room) {
+
+    var nbUsers = 0;
+    for (const user of users) {
+        if(user.room === room){
+            nbUsers++;
+        }
+    }
+    return nbUsers;
+}
+
+module.exports = { users, removeUser, getUserById, getUserByName, getUserByRoom, getNumberedUsersByRoom};

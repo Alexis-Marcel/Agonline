@@ -1,9 +1,13 @@
 {
+  "name": "agonline",
+  "version": "1.0.0",
+  "description": "projet tut IUT info",
+  "main": "server/server.js",
+  "author": "Alexis MARCEL, Lilian LEBLANC, Justine PRULIERE",
   "dependencies": {
-    "express": "^4.17.1",
-    "express-session": "^1.17.2",
+    "express": "^4.17.2",
     "jquery": "^3.6.0",
     "socket-io-anti-spam": "^2.5.0",
-    "socket.io": "^4.4.0"
+    "socket.io": "^4.4.1"
   }
 }
