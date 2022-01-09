@@ -81,4 +81,12 @@ function codeAleatoire() {
   
     return text;
   }
+
+function copy() {
+    var copyText = document.querySelector("#codeRoom");
+    copyText.select();
+    document.execCommand("copy");
+}
+
+document.querySelector("#copy").addEventListener("click", copy);
   
