@@ -1,6 +1,6 @@
 const socket = io();
 
-import { displayMessage } from "./message.js";
+import { displayMessage, setSolution } from "./message.js";
 
 let codeRoom = codeAleatoire();
 $("#codeRoom").val(codeRoom);
@@ -27,48 +27,71 @@ function submitMessage() {
   $("#messageInput").val("").focus();
 }
 
-
-$("#start-button").on("click", function (event){
-  socket.emit("start", codeRoom)
-});
-
 let solution;
-socket.on("set", (set) => {
+
+socket.on("setUp", () => {
+
+  socket.on("timer", (time) => displayTime(time));
+
+  socket.on("questionSuivanteResponse", (set) => {
+
+  setSolution("cacher",solution);
+  setTimer("afficher");
   $("#question").text(set.question);
 
   for (var i = 0; i < 4; i++) {
-    $("#A, #B, #C, #D")[i].innerHTML = set.reponse[i];
+    $("#A, #B, #C, #D")[i].innerHTML = $("#A, #B, #C, #D")[i].id + " : " +set.reponse[i];
   }
 
   solution = set.correct;
 
+  });
+
+  $("#start-button").on("click",start);
+
+  socket.on("last", () => $("#start-button").html("Recommencer le jeu"));
+
+  socket.on("endGame", () => resetDisplay());
 });
 
-function afficherSolution(){
-
-  let sol = "#"+solution;
-  $("#A, #B, #C, #D").parent().parent().toggleClass("bg-light");
-  $("#A, #B, #C, #D").parent().parent().toggleClass("text-white");
-  $("#A, #B, #C, #D").parent().parent().toggleClass("text-dark");
-  $("#A, #B, #C, #D").parent().parent().toggleClass("bg-danger");
-  $(sol).parent().parent().toggleClass("bg-danger");
-  $(sol).parent().parent().toggleClass("bg-success");
 
 
+function start() {
+
+  $("#waitMessage").toggleClass("d-none");
+  $("#game").toggleClass("d-none");
+
+  socket.emit("start");
+
+  socket.emit("questionSuivanteRequest");
+
+  setTimer("afficher");
+
+  $("#start-button").off("click");
+  $("#start-button").on("click",() => socket.emit("questionSuivanteRequest"));
+  $("#start-button").html("Question suivante");
 
 }
 
-socket.on("timer", (time) => displayTime(time));
-
-
 function displayTime(timer){
   let timeleft = timer.temps;
+  
       if (timeleft <= 0) {
-        $("#timesLeft").text("Finished");
-        afficherSolution();
+        setTimer("cacher");
+        setSolution("afficher",solution);
       } else {
         $("#timesLeft").text(timeleft + " secondes");
       }
+}
+
+function setTimer(param){
+  if(param === "afficher"){
+    $("#timesLeft").parent().removeClass("d-none");
+  }
+  else {
+    $("#timesLeft").parent().addClass("d-none");
+    $("#timesLeft").text("");
+  }
 }
 
 
@@ -83,10 +106,20 @@ function codeAleatoire() {
   }
 
 function copy() {
-    var copyText = document.querySelector("#codeRoom");
-    copyText.select();
+
+    $("#codeRoom").select();
     document.execCommand("copy");
 }
 
-document.querySelector("#copy").addEventListener("click", copy);
+$("#copy").on("click", copy);
   
+
+function resetDisplay(){
+  setTimer("cacher");
+  $("#waitMessage").toggleClass("d-none");
+  $("#game").toggleClass("d-none");
+  $("#start-button").off("click");
+  $("#start-button").on("click",start);
+  $("#start-button").html("Lancer le jeu");
+  socket.emit("restart");
+}

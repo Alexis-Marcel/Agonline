@@ -18,6 +18,12 @@ const { getRandomColor } = require("./color.js");
 const { rooms, checkValidRoom } = require("./rooms.js");
 require("./spam.js");
 
+const set = [
+    {question: "Quelle est la capitale de l'ouzbekistan ?", reponse: ["Khartoum", "Addis-Abeba", "Noursoultan", "Tachkent"], correct: "D"},
+    {question: "Quelle est la capital de la Colombie ?", reponse: ["La Havane", "Bogota", "Nairobi", "Helsinki"], correct: "B"},
+    {question: "Quelle est la capital de l'Indonésie ?", reponse: ["Buenos Aires", "Jakarta", "Manille", "Oulan-Bator"], correct: "B"},
+];
+
 io.on("connection", (socket) => {
 
     /**
@@ -61,18 +67,50 @@ io.on("connection", (socket) => {
 });
 
 
+let questCourante;
+let socketCreateur;
+let stopInterval;
 function createRoom(socket, codeRoom) {
+    socketCreateur = socket;
     socket.join(codeRoom);
     // ajout du code de la partie dans la liste des parties
     const room = { codeRoom: codeRoom };
     rooms.push(room);
 
-    socket.on("start", (room) => {
-        startTimer(room);
-        const set = {question: "Quelle est la capital de l'ouzbekistan ?", reponse: ["Paris", "Moscou", "Gontran", "Tachkent"], correct: "D"};
-        socket.emit("set",set);
-        io.to(room).emit("reponse",set.correct);
+    socket.on("questionSuivanteRequest", () => envoyerQuestion(codeRoom));
+    socket.on("restart", () => io.to(codeRoom).emit("restart"));
+
+    socket.emit("setUp");
+
+    socket.on("start", () => {
+        questCourante=0;
+        io.to(codeRoom).emit("start");
+
     });   
+}
+
+function envoyerQuestion(room) {
+
+    console.log("question suivante");
+    clearInterval(stopInterval);
+
+    if(questCourante < set.length){
+        startTimer(room);
+        socketCreateur.emit("questionSuivanteResponse",set[questCourante]);
+        io.to(room).emit("reponseClient",set[questCourante].correct);
+        console.log(questCourante);
+        questCourante++;
+
+        if(questCourante >= set.length){
+            socketCreateur.emit("last");
+            console.log("prepare end");
+            
+        }
+    }
+    else {
+        console.log("end");
+        socketCreateur.emit("endGame");
+    }
 }
 
 function addUser(socket, name, room) {
@@ -153,19 +191,22 @@ function creatorMessage(room,text){
     });
 }
 
+
+
 function startTimer(room){
     let timeleft = 10;
-    const downloadTimer = setInterval(function () {
-        if (timeleft <= 0) {
-            clearInterval(downloadTimer);
-            io.to(room).emit("timer", {
-                temps:timeleft,
-            })
-        } else {
+        stopInterval = setInterval(function () {
+        if (timeleft <= -5) {
+            clearInterval(stopInterval);
+            envoyerQuestion(room);
+        }
+        if (timeleft >= 0) {
             io.to(room).emit("timer", {
                 temps:timeleft,
             })
         }
+        console.log("time" + stopInterval);
+
         timeleft -= 1;
     }, 1000);
 }

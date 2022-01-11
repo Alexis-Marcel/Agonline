@@ -11,6 +11,7 @@ const socketAntiSpam = new SocketAntiSpam({
     io: io,
 });
 
+/*
 socketAntiSpam.event.on("kick", (socket, data) => {
     io.to("users").emit("serverMessage", {
         name: botName,
@@ -20,3 +21,4 @@ socketAntiSpam.event.on("kick", (socket, data) => {
     });
     socket.emit("kick");
 });
+*/
