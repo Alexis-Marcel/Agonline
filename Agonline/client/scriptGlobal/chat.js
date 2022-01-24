@@ -1,5 +1,3 @@
-
-  
 	$('.js-menu-toggle').on("click",function(e) {
   
 		var $this = $(this);

@@ -3,6 +3,7 @@ const { getUserById } = require("./users.js");
 
 const SocketAntiSpam = require("socket-io-anti-spam");
 
+/*
 const socketAntiSpam = new SocketAntiSpam({
     banTime: 10,
     kickThreshold: 10,
@@ -10,7 +11,7 @@ const socketAntiSpam = new SocketAntiSpam({
     banning: true,
     io: io,
 });
-
+*/
 /*
 socketAntiSpam.event.on("kick", (socket, data) => {
     io.to("users").emit("serverMessage", {

@@ -1,5 +1,6 @@
 const socket = io();
-import { displayMessage, setSolution} from "./message.js";
+import { setSolution} from "./affichage.js";
+import { displayMessage} from "../../scriptGlobal/message.js";
 
 var nom = localStorage.getItem('name');
 
@@ -46,12 +47,8 @@ function submitMessage() {
 }
 
 
-
-
 let solution;
 let reponse;
-
-
 function setUp(){
     
     console.log("setup");
@@ -60,19 +57,26 @@ function setUp(){
         let timeleft = time.temps;
           if (timeleft <= 0) {
             setSolution("afficher",solution);
-            setScore();
-            $("#rA, #rB, #rC, #rD").off("click");
+            $("#A, #B, #C, #D").off("click");
           }
     });
 
     socket.on("reponseClient", (rep) => {
 
-          setUpReponseClient();
-          setSolution("cacher",solution);
-          solution = rep;
+        $("#reponse").removeClass("d-none");
+        setSolution("cacher",solution);
+        $("#waitQuestion").addClass("d-none");
+        setUpReponseClient();
+        solution = rep;
     });
 
     socket.on("restart", () => restart());
+
+    socket.on("score", (score) => {
+        $("#reponse").addClass("d-none");
+        $("#waitQuestion").removeClass("d-none");
+        $("#score").text(score);
+    });
 
    
 };
@@ -89,25 +93,18 @@ function setUpReponseClient(){
     }
     reponse = undefined;
 
-    $("#rA, #rB, #rC, #rD").on("click", function (event){
+    $("#A, #B, #C, #D").on("click", function (event){
 
         if(lastevent !== undefined){
             lastevent.classList.toggle("select");
         }
-            reponse = event.currentTarget.id;
+            socket.emit("reponse",event.currentTarget.id); 
             event.currentTarget.classList.toggle("select");
             lastevent = event.currentTarget;
         
     });
 }
 
-function setScore(){
-    let sol = "r"+solution;
-    if(reponse === sol){
-        $("#score").text(parseInt($("#score").text())+1);    
-    }
-    sol = "#r"+solution;
-}
 
 function startDisplay(){
     $("#waitMessage").toggleClass("d-none");
@@ -116,8 +113,7 @@ function startDisplay(){
 
 function restart(){
     $("#waitMessage").toggleClass("d-none");
-    $("#reponse").toggleClass("d-none");
-    $("#score").text("0");    
+    $("#reponse").toggleClass("d-none");   
 
 }
 

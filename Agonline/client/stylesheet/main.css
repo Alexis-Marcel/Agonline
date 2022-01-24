@@ -83,3 +83,45 @@ body {
 .select{
   border: 10px solid rgb(55, 58, 117);
 }
+
+#reponse div {
+  height: 40%;
+}
+
+#gameinfo{
+  height: 20%;
+}
+
+
+@media  (max-width: 768px) {
+  #reponse div {
+    height: 20%;
+  }
+  #gameinfo{
+    height: 10%;
+  }
+}
+
+
+#affichageScore {
+  position: absolute;
+  max-height:70%;
+  left: 25%;
+  width: 50%;
+  overflow-y: auto; 
+}
+#affichageScore > div { 
+    color: white; 
+    font-size: 24px; 
+    padding-bottom: 20px; 
+    padding-top: 20px; 
+} 
+  
+#affichageScore > div:nth-child(2n+1) { 
+    background: rgb(55, 58, 117); 
+}
+  
+#affichageScore > div:nth-child(2n+2) { 
+    background: white; 
+    color: #333;
+} 

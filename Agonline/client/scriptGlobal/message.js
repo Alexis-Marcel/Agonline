@@ -25,24 +25,3 @@ function getTime() {
   const timeOption = { hour: "2-digit", minute: "2-digit" };
   return currentDate.toLocaleTimeString([], timeOption);
 }
-
-export function setSolution(param,solution){
-
-    let sol = "#"+solution;
-    if(param === "afficher"){
-      $("#A, #B, #C, #D").parent().parent().removeClass("bg-light");
-      $("#A, #B, #C, #D").parent().parent().addClass("text-white");
-      $("#A, #B, #C, #D").parent().parent().removeClass("text-dark");
-      $("#A, #B, #C, #D").parent().parent().addClass("bg-danger");
-      $(sol).parent().parent().removeClass("bg-danger");
-      $(sol).parent().parent().addClass("bg-success");
-    }
-    else {
-      $("#A, #B, #C, #D").parent().parent().addClass("bg-light");
-      $("#A, #B, #C, #D").parent().parent().removeClass("text-white");
-      $("#A, #B, #C, #D").parent().parent().addClass("text-dark");
-      $("#A, #B, #C, #D").parent().parent().removeClass("bg-danger");
-      $(sol).parent().parent().removeClass("bg-success");
-    }
-    
-  }

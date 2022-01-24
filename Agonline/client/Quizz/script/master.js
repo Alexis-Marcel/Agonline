@@ -1,11 +1,16 @@
 const socket = io();
 
-import { displayMessage, setSolution } from "./message.js";
+import { setSolution} from "./affichage.js";
+import { displayMessage} from "../../scriptGlobal/message.js";
+
+
+const params = new URLSearchParams(window.location.search)
+const jeu = params.get('jeu');
 
 let codeRoom = codeAleatoire();
 $("#codeRoom").val(codeRoom);
 
-socket.emit("createur", codeRoom);
+socket.emit("createur", codeRoom, jeu);
 
 socket.on("userNumber", (number) => {
     $("#nombreJoueur").val(number);
@@ -14,7 +19,7 @@ socket.on("userNumber", (number) => {
 
 socket.emit("userNumber", codeRoom);
 
-socket.on("serverMessage", displayMessage);
+socket.on("serverMessage", (score) => displayMessage(score));
 
 $(".msg-inputarea").on("submit", function( event ) {
   event.preventDefault();
@@ -37,10 +42,15 @@ socket.on("setUp", () => {
 
   setSolution("cacher",solution);
   setTimer("afficher");
+  $("#game").removeClass("d-none");
+  $("#score").addClass("d-none");
+
+  $("#affichageScore div").remove();
+
   $("#question").text(set.question);
 
   for (var i = 0; i < 4; i++) {
-    $("#A, #B, #C, #D")[i].innerHTML = $("#A, #B, #C, #D")[i].id + " : " +set.reponse[i];
+    $("#rA, #rB, #rC, #rD")[i].innerHTML = $("#rA, #rB, #rC, #rD")[i].id + " : " +set.reponse[i];
   }
 
   solution = set.correct;
@@ -52,6 +62,8 @@ socket.on("setUp", () => {
   socket.on("last", () => $("#start-button").html("Recommencer le jeu"));
 
   socket.on("endGame", () => resetDisplay());
+
+  socket.on("scoreJoueurs", (score) => displayScore(score));
 });
 
 
@@ -59,13 +71,11 @@ socket.on("setUp", () => {
 function start() {
 
   $("#waitMessage").toggleClass("d-none");
-  $("#game").toggleClass("d-none");
 
   socket.emit("start");
 
-  socket.emit("questionSuivanteRequest");
 
-  setTimer("afficher");
+  socket.emit("questionSuivanteRequest");
 
   $("#start-button").off("click");
   $("#start-button").on("click",() => socket.emit("questionSuivanteRequest"));
@@ -82,6 +92,38 @@ function displayTime(timer){
       } else {
         $("#timesLeft").text(timeleft + " secondes");
       }
+}
+
+function displayScore(score){
+  score.sort(function(a,b){
+    return b.score - a.score;
+  })
+
+  let compte=1;
+  score.forEach(joueur => {
+    const num = $("<div></div>").text(compte);
+    const name = $("<div></div>").text(joueur.name);
+    const point = $("<div></div>")
+        .text(joueur.score);
+    const scoreJoueur = $("<div></div>")
+        .append(num)
+        .append(name)
+        .append(point)
+        .addClass("d-flex")
+        .addClass("justify-content-between")
+        .addClass("align-items-center");
+    $("#affichageScore")
+        .append(scoreJoueur)
+        .scrollTop(function () {
+            return this.scrollHeight;
+        });
+
+    compte++;
+  });
+
+  $("#game").toggleClass("d-none");
+  $("#score").removeClass("d-none");
+  
 }
 
 function setTimer(param){
@@ -117,9 +159,10 @@ $("#copy").on("click", copy);
 function resetDisplay(){
   setTimer("cacher");
   $("#waitMessage").toggleClass("d-none");
-  $("#game").toggleClass("d-none");
   $("#start-button").off("click");
   $("#start-button").on("click",start);
   $("#start-button").html("Lancer le jeu");
   socket.emit("restart");
 }
+
+

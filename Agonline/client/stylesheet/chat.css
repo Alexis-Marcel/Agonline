@@ -208,24 +208,7 @@ aside input[type="submit"]:hover {
   margin-right: 6px;
 }
 
-#reponse div {
-  height: 40%;
-}
 
-#gameinfo{
-  height: 20%;
-}
-
-
-@media  (max-width: 768px) {
-  #reponse div {
-    height: 20%;
-  }
-  #gameinfo{
-    height: 10%;
-  }
-
-}
 
 
 

@@ -13,7 +13,7 @@
     <title>Agonline Connexion</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         .bd-placeholder-img {
@@ -34,8 +34,8 @@
     </style>
 
     <!-- Custom styles for this template -->
-    <link rel="stylesheet" href="stylesheet/main.css">
-    <link rel="stylesheet" href="stylesheet/chat.css">
+    <link rel="stylesheet" href="../stylesheet/main.css">
+    <link rel="stylesheet" href="../stylesheet/chat.css">
 
 </head>
 
@@ -65,7 +65,7 @@
       </aside>
 
       <div class="toggle">
-        <a id="exit" href="index.html" class="nav-direction menu-toggle">
+        <a id="exit" href="../index.html" class="nav-direction menu-toggle">
           <i class="fas fa-x fa-sign-out-alt" title="logout"></i>
         </a>
       </div>
@@ -74,7 +74,7 @@
     <div class="container w-100 h-100">
         <div class="row justify-content-center m-3" style="height:10%;" >
           <div class="col text-center">
-              <p class ="text-white fs-3">Score : <span id="score">0</span></p>
+              <p class ="text-white fs-3">Score : <span id="score"></span></p>
           </div>
       </div>
     
@@ -90,35 +90,45 @@
           </div>
         </div>
 
+        <div id="waitQuestion" class="row w-100 h-100 mx-auto align-items-center text-center d-none">
+          <div class="col-12">
+            <div class="card text-dark bg-light h-100">
+              <div class="card-body d-flex mx-auto align-items-center">
+                <h5  class="card-title">En attente de la prochaine question...</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="reponse" class="row w-100 h-100 mx-auto align-items-center text-center d-none">
 
           <div class="col-12 col-md-6 mb-2">
-            <div id="rA" class="card text-dark bg-light h-100">
+            <div id="A" class="card text-dark bg-light h-100">
               <div class="card-body d-flex mx-auto align-items-center">
-                <h5 id="A" class="card-title">A</h5>
+                <h5 class="card-title">A</h5>
               </div>
             </div>
           </div>
           <div class="col-12 col-md-6 mt-md-0 mt-3 mb-2">
-            <div id="rB" class="card text-dark bg-light h-100" >
+            <div id="B" class="card text-dark bg-light h-100" >
               <div class="card-body d-flex mx-auto align-items-center">
-                <h5 id="B" class="card-title">B</h5>
+                <h5 class="card-title">B</h5>
               </div>
             </div>
           </div>
 
 
           <div class="col-12 col-md-6 mb-md-0 mb-3 mt-2 ">
-            <div id="rC" class="card text-dark bg-light h-100">
+            <div id="C" class="card text-dark bg-light h-100">
               <div class="card-body d-flex mx-auto align-items-center">
-                <h5 id="C" class="card-title">C</h5>
+                <h5 class="card-title">C</h5>
               </div>
             </div>
           </div>
           <div class="col-12 col-md-6 mt-2">
-            <div id="rD" class="card text-dark bg-light h-100">
+            <div id="D" class="card text-dark bg-light h-100">
               <div class="card-body d-flex mx-auto align-items-center">
-                <h5 id="D" class="card-title">D</h5>
+                <h5 class="card-title">D</h5>
               </div>
             </div>
           </div>
@@ -134,7 +144,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="script/chat.js"></script>
+    <script src="../scriptGlobal/chat.js"></script>
     <script type="module" src="script/client.js"></script>
 
 
