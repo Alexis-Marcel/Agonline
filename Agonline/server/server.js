@@ -11,11 +11,9 @@ const botName = "ChatBot";
 
 module.exports = { io, botName };
 
-const { users,checkValidName, removeUser, getUserById, getUserByName, getUserByRoom, getNumberedUsersByRoom } = require("./users.js");
-const { getRandomColor } = require("./color.js");
-const { rooms, checkValidRoom, getRoomByCode, getRoomBySocketCreateur } = require("./rooms.js");
-const { sendMessage, creatorMessage } = require("./Jeu/Chat.js");
-const { setUpQuizz, setUpQuizzClient} = require("./Jeu/Quizz.js");
+const { checkValidName} = require("./users.js");
+const { rooms, checkValidRoom, getRoomByCode } = require("./rooms.js");
+const { Quizz } = require("./game/quizz.js");
 
 require("./spam.js");
 
@@ -25,23 +23,25 @@ io.on("connection", (socket) => {
     /**
      * envoie du nombre de participant dans la room
      */
-    socket.on("userNumber", (room) => socket.emit("userNumber", getNumberedUsersByRoom(room)));
+    socket.on("userNumber", (room) => socket.emit("userNumber", getRoomByCode(room).users.length));
 
     /**
-     * création d'une partie
+     * création d'un quizz
      */
-    socket.on("createur", (room,jeu) => createRoom(socket,room,jeu));   
-    
+    socket.on("quizzCreation", () => {
+        rooms.push(new Quizz(socket));
+    });
+
     /**
      * connexion du joueur sur la page gameRoom.html
      */
-    socket.on("login", (name, room) => addUser(socket, name, room));
+    socket.on("login", (name, room) => getRoomByCode(room).addUser(socket,name));
 
     /**
      * initialisation du nom du joueur dans la page joinGame.html
      */
     socket.on("checkLog", (name,room) => {
-        if (checkValidName(name,room, socket, users)) {
+        if (checkValidName(name, socket, getRoomByCode(room).users)) {
             destination = "../Quizz/quizzPlayer.html?room=" + room;
             socket.emit("checkLog", destination);
         }
@@ -57,68 +57,5 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("creatorMessage", (room,text) => creatorMessage(room, text));
-    socket.on("clientMessage", (text) => sendMessage(socket, text));
-    socket.on("disconnect", () => removeSocket(socket));
 });
-
-
-
-/**
- * creation d'un jeu
- */
-function createRoom(socket, codeRoom,j) {
-    socket.join(codeRoom);
-    
-    let jeu;
-    if(j == "quizz"){
-        jeu = setUpQuizz(socket,codeRoom);
-    }
-    const room = { codeRoom: codeRoom, socketCreateur : socket, game: jeu};
-    rooms.push(room);
-
-    console.log("création d'un jeu"+ codeRoom);
-   
-}
-
-/**
- * ajout d'un joueur à un jeu
- */
-function addUser(socket, name, room) {
-    socket.join(room);
-    socket.emit("login");
-    io.to(room).emit("serverMessage", {
-        name: botName,
-        text: `${name} est entré dans la salle !`,
-        color: "white",
-        style: "italic",
-    });
-
-    //ajout du joueur dans la liste des joueurs de la partie
-    const user = { socket: socket, name: name, room: room, color: getRandomColor() };
-    users.push(user);
-    io.to(room).emit("userNumber", getNumberedUsersByRoom(room));
-
-    if(getRoomByCode(room).game.name == "quizz"){
-        setUpQuizzClient(socket);
-    }
-}
-
-/**
- * suppresion du joueur dans la liste des joueurs de la partie
- */
-function removeSocket(socket) {
-    const user = getUserById(socket.id);
-    if (!user) return;
-    io.to(user.room).emit("serverMessage", {
-        name: botName,
-        text: `${user.name} a quitté la salle !`,
-        color: "white",
-        style: "italic",
-    });
-    socket.leave(user.room);
-    removeUser(user);
-    io.to(user.room).emit("userNumber", getNumberedUsersByRoom(user.room));
-}
-
 

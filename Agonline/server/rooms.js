@@ -15,8 +15,15 @@ function getRoomByCode(code) {
     return rooms.find((room) => room.codeRoom === code);
 }
 
+function getRoomByUserId(id) {
+    rooms.forEach((room) => {
+        if(room.users.find(user => user.socket.id === id) !== undefined)
+            return room;
+    })
+}
+
 function getRoomBySocketCreateur(s) {
     return rooms.find((room) => room.socketCreateur.id === s.id);
 }
 
-module.exports = { rooms, checkValidRoom, getRoomByCode, getRoomBySocketCreateur };
+module.exports = { rooms,getRoomByUserId, checkValidRoom, getRoomByCode, getRoomBySocketCreateur };

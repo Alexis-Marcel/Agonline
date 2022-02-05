@@ -1,46 +1,98 @@
 const socket = io();
 
-import { setSolution} from "./affichage.js";
-import { displayMessage} from "../../scriptGlobal/message.js";
+import { setSolution } from "./affichage.js";
+import { displayMessage } from "../../scriptGlobal/message.js";
 
 
-const params = new URLSearchParams(window.location.search)
-const jeu = params.get('jeu');
+let codeRoom;
 
-let codeRoom = codeAleatoire();
-$("#codeRoom").val(codeRoom);
+/**
+ * obtention du code de la salle après création de la salle dans le serveur
+ */
+socket.on("codeRoom", (code) => {
+  codeRoom = code;
+  $("#codeRoom").val(codeRoom);
+  socket.emit("userNumber", codeRoom);
+});
 
-socket.emit("createur", codeRoom, jeu);
+/**
+ * création d'un quizz
+ */
+socket.emit("quizzCreation");
 
+
+/**
+ * mise à jour du nombre de joueurs connectés à la salle
+ */
 socket.on("userNumber", (number) => {
-    $("#nombreJoueur").val(number);
-    $("#userNumberChat").text(number);
+  $("#nombreJoueur").val(number);
+  $("#userNumberChat").text(number);
 });
 
-socket.emit("userNumber", codeRoom);
 
-socket.on("serverMessage", (score) => displayMessage(score));
 
-$(".msg-inputarea").on("submit", function( event ) {
+socket.on("serverMessage", (text) => displayMessage(text));
+
+/**
+ * envoie d'un message dans le chat
+ */
+$(".msg-inputarea").on("submit", function (event) {
   event.preventDefault();
-  submitMessage();
+  var text = $("#messageInput").val();
+  socket.emit("creatorMessage", text);
+  $("#messageInput").val("").focus();
 });
 
-function submitMessage() {
-  var text = $("#messageInput").val();
-  socket.emit("creatorMessage", codeRoom,text);
-  $("#messageInput").val("").focus();
+
+/**
+ * écoute du timer
+ */
+socket.on("timer", (timeleft) => $("#timesLeft").text(timeleft + " secondes"));
+
+
+/**
+ * initialisation du bouton pour lancer le jeu
+ */
+$("#start-button").on("click", function () {
+  $("#waitMessage").toggleClass("d-none");
+  socket.emit("start");
+});
+
+/**
+ * afficher une question
+ */
+ socket.on("affichageQuestion", (set) => displayQuestion(set));
+
+/**
+ * afficher la solution
+ */
+ let solution;
+ socket.on("solution", (solu) => displaySolution(solu));
+
+/**
+ * afficher le score global
+ */
+socket.on("affichageScore", (score,end) => displayScore(score,end));
+
+
+
+function displaySolution(solu) {
+
+  $("#start-button").html("Afficher score");
+  $("#start-button").off("click");
+  $("#start-button").on("click", () => socket.emit("afficherScore"));
+  solution = solu;
+  setTimer("cacher");
+  setSolution("afficher", solution);
 }
 
-let solution;
+function displayQuestion(set) {
 
-socket.on("setUp", () => {
+  $("#start-button").html("Afficher solution");
+  $("#start-button").off("click");
+  $("#start-button").on("click", () => socket.emit("afficherSolution"));
 
-  socket.on("timer", (time) => displayTime(time));
-
-  socket.on("questionSuivanteResponse", (set) => {
-
-  setSolution("cacher",solution);
+  setSolution("cacher", solution);
   setTimer("afficher");
   $("#game").removeClass("d-none");
   $("#score").addClass("d-none");
@@ -50,84 +102,73 @@ socket.on("setUp", () => {
   $("#question").text(set.question);
 
   for (var i = 0; i < 4; i++) {
-    $("#rA, #rB, #rC, #rD")[i].innerHTML = $("#rA, #rB, #rC, #rD")[i].id + " : " +set.reponse[i];
+    $("#rA, #rB, #rC, #rD")[i].innerHTML = $("#A, #B, #C, #D")[i].id + " : " + set.reponse[i];
   }
 
-  solution = set.correct;
-
-  });
-
-  $("#start-button").on("click",start);
-
-  socket.on("last", () => $("#start-button").html("Recommencer le jeu"));
-
-  socket.on("endGame", () => resetDisplay());
-
-  socket.on("scoreJoueurs", (score) => displayScore(score));
-});
-
-
-
-function start() {
-
-  $("#waitMessage").toggleClass("d-none");
-
-  socket.emit("start");
-
-
-  socket.emit("questionSuivanteRequest");
-
-  $("#start-button").off("click");
-  $("#start-button").on("click",() => socket.emit("questionSuivanteRequest"));
-  $("#start-button").html("Question suivante");
-
 }
 
-function displayTime(timer){
-  let timeleft = timer.temps;
-  
-      if (timeleft <= 0) {
-        setTimer("cacher");
-        setSolution("afficher",solution);
-      } else {
-        $("#timesLeft").text(timeleft + " secondes");
-      }
-}
 
-function displayScore(score){
-  score.sort(function(a,b){
+function displayScore(score, end) {
+
+  if (end) {// si c'est la fin du jeu
+    $("#start-button").html("Recommencer le jeu")
+    $("#start-button").off("click");
+    $("#start-button").on("click", function () { socket.emit("start") });
+  }
+  else {
+    $("#start-button").html("Question suivante");
+    $("#start-button").off("click");
+    $("#start-button").on("click", () => socket.emit("afficherQuestion"));
+
+  }
+
+
+  /**
+   * trie du score selon le score décroissant
+   */
+  score.sort(function (a, b) {
     return b.score - a.score;
   })
 
-  let compte=1;
+  let compte = 1;
   score.forEach(joueur => {
     const num = $("<div></div>").text(compte);
     const name = $("<div></div>").text(joueur.name);
-    const point = $("<div></div>")
-        .text(joueur.score);
+    let point;
+    if(joueur.score <=1){
+      point = $("<div></div>")
+      .text(joueur.score + " point");
+    }
+    else {
+      point = $("<div></div>")
+      .text(joueur.score + " points");
+    }
     const scoreJoueur = $("<div></div>")
-        .append(num)
-        .append(name)
-        .append(point)
-        .addClass("d-flex")
-        .addClass("justify-content-between")
-        .addClass("align-items-center");
+      .append(num)
+      .append(name)
+      .append(point)
+      .addClass("d-flex")
+      .addClass("justify-content-between")
+      .addClass("align-items-center");
     $("#affichageScore")
-        .append(scoreJoueur)
-        .scrollTop(function () {
-            return this.scrollHeight;
-        });
+      .append(scoreJoueur)
+      .scrollTop(function () {
+        return this.scrollHeight;
+      });
 
     compte++;
   });
 
-  $("#game").toggleClass("d-none");
+  $("#game").addClass("d-none");
   $("#score").removeClass("d-none");
-  
+
 }
 
-function setTimer(param){
-  if(param === "afficher"){
+/**
+ * afficher ou cacher le timer
+ */
+function setTimer(param) {
+  if (param === "afficher") {
     $("#timesLeft").parent().removeClass("d-none");
   }
   else {
@@ -136,33 +177,16 @@ function setTimer(param){
   }
 }
 
-
-function codeAleatoire() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  
-    for (var i = 0; i < 5; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-  
-    return text;
-  }
-
+/**
+ * copie du code la room
+ */
 function copy() {
 
-    $("#codeRoom").select();
-    document.execCommand("copy");
+  $("#codeRoom").select();
+  document.execCommand("copy");
 }
 
 $("#copy").on("click", copy);
-  
 
-function resetDisplay(){
-  setTimer("cacher");
-  $("#waitMessage").toggleClass("d-none");
-  $("#start-button").off("click");
-  $("#start-button").on("click",start);
-  $("#start-button").html("Lancer le jeu");
-  socket.emit("restart");
-}
 
 
