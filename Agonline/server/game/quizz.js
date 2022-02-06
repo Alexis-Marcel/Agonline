@@ -17,6 +17,7 @@ class Quizz extends Game {
         this.questCourante = 0;
         this.affichageEvent = 0;
         this.timeleft = 0;
+        this.nbReponse = 0;
 
         this.socketCreateur.on("afficherQuestion", () => this.getQuestion());
         this.socketCreateur.on("afficherSolution", () => this.getSolution());
@@ -38,10 +39,15 @@ class Quizz extends Game {
         super.addUser(socket, name);
 
         socket.on("score", (reponse) => {
-            if (reponse == this.tabQuestion[this.questCourante].correct) {
-                
+            this.nbReponse++;
+            this.socketCreateur.emit("nbReponse",this.nbReponse, this.users.length);
+            if (reponse == this.tabQuestion[this.questCourante].correct) {   
                 getUserById(this.users, socket.id).score++;
-                console.log(getUserById(this.users, socket.id).score)
+                
+            }
+
+            if(this.nbReponse == this.users.length){
+                this.getSolution();
             }
 
         });
@@ -52,6 +58,8 @@ class Quizz extends Game {
 
         clearInterval(this.timerStoper);
         this.affichageEvent++;
+        this.nbReponse = 0;
+        this.socketCreateur.emit("nbReponse",this.nbReponse, this.users.length);
 
         this.timer(10);
 

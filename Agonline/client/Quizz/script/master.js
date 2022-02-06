@@ -74,6 +74,8 @@ $("#start-button").on("click", function () {
  */
 socket.on("affichageScore", (score,end) => displayScore(score,end));
 
+socket.on("nbReponse",(nbReponse,nbUser) => $("#nbReponse").text(nbReponse + "/"+ nbUser));
+
 
 
 function displaySolution(solu) {
@@ -83,6 +85,7 @@ function displaySolution(solu) {
   $("#start-button").on("click", () => socket.emit("afficherScore"));
   solution = solu;
   setTimer("cacher");
+  setNbReponse("cacher");
   setSolution("afficher", solution);
 }
 
@@ -94,6 +97,7 @@ function displayQuestion(set) {
 
   setSolution("cacher", solution);
   setTimer("afficher");
+  setNbReponse("afficher");
   $("#game").removeClass("d-none");
   $("#score").addClass("d-none");
 
@@ -173,7 +177,18 @@ function setTimer(param) {
   }
   else {
     $("#timesLeft").parent().addClass("d-none");
-    $("#timesLeft").text("");
+  }
+}
+
+/**
+ * afficher ou cacher le nombre de réponse
+ */
+ function setNbReponse(param) {
+  if (param === "afficher") {
+    $("#nbReponse").parent().removeClass("d-none");
+  }
+  else {
+    $("#nbReponse").parent().addClass("d-none");
   }
 }
 
