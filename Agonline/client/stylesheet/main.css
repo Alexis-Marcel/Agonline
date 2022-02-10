@@ -89,7 +89,7 @@ body {
 }
 
 #gameinfo{
-  height: 20%;
+  height: 30%;
 }
 
 
@@ -98,7 +98,7 @@ body {
     height: 20%;
   }
   #gameinfo{
-    height: 10%;
+    height: 20%;
   }
 }
 

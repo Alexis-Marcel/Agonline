@@ -13,6 +13,8 @@ class Quizz extends Game {
             { question: "Quelle est la capital de l'Indonésie ?", reponse: ["Buenos Aires", "Jakarta", "Manille", "Oulan-Bator"], correct: "B" },
         ];
 
+        getSetOfQuestion();
+
         this.timerStoper = undefined;
         this.questCourante = 0;
         this.affichageEvent = 0;
@@ -135,6 +137,40 @@ class Quizz extends Game {
         }
         this.timeleft -= 1;
     }
+
+}
+
+function getSetOfQuestion(){
+    const mysql = require("mysql");
+
+    const db = mysql.createConnection({
+        host : "localhost",
+        user: "root",
+        password: "",
+        database : "agonline",
+    });
+
+    db.connect((err) => {
+        if(err){
+            console.log("CONNEXION A LA BASE IMPOSSIBLE");
+        }
+        else {
+            console.log("connected");
+
+            
+            db.query ('SELECT * FROM quizz ', (err, lignes) => {
+                if (err) throw err;
+              
+                console.log ('Données reçues de Db:');
+                console.log (lignes);
+              });
+        }
+        
+    });
+
+
+
+
 
 }
 

@@ -209,6 +209,9 @@ aside input[type="submit"]:hover {
 }
 
 
+#gameNumber {
 
-
+  position: absolute;
+  left: 80%;
+}
 
