@@ -77,6 +77,8 @@ socket.on("affichageScore", (score,end) => displayScore(score,end));
 socket.on("nbReponse",(nbReponse,nbUser) => $("#nbReponse").text(nbReponse + "/"+ nbUser));
 
 
+socket.on("nbQuestion",(nbQuestion,totalQuestion) => $("#nbQuestion").text(nbQuestion+"/"+totalQuestion));
+
 
 function displaySolution(solu) {
 
@@ -90,7 +92,8 @@ function displaySolution(solu) {
 }
 
 function displayQuestion(set) {
-
+  
+  $("#nbQuestion").parent().removeClass("d-none");
   $("#start-button").html("Afficher solution");
   $("#start-button").off("click");
   $("#start-button").on("click", () => socket.emit("afficherSolution"));

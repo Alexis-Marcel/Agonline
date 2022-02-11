@@ -2,18 +2,36 @@ const { Game } = require("./game.js");
 const { io } = require("../server.js");
 const { getUserById } = require("../users.js");
 
+const mysql = require("mysql");
+
+const nombreQuestionQuizz = 2;
+
+const db = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "agonline",
+});
+
+db.connect((err) => {
+    if (err) {
+        throw "CONNEXION A LA BASE IMPOSSIBLE\n\n" + err;
+    }
+});
+
+
 class Quizz extends Game {
 
     constructor(codeRoom, socketCreateur) {
         super(codeRoom, socketCreateur);
 
+        /*
         this.tabQuestion = [
             { question: "Quelle est la capitale de l'ouzbekistan ?", reponse: ["Khartoum", "Addis-Abeba", "Noursoultan", "Tachkent"], correct: "D" },
             { question: "Quelle est la capital de la Colombie ?", reponse: ["La Havane", "Bogota", "Nairobi", "Helsinki"], correct: "B" },
             { question: "Quelle est la capital de l'Indonésie ?", reponse: ["Buenos Aires", "Jakarta", "Manille", "Oulan-Bator"], correct: "B" },
         ];
-
-        getSetOfQuestion();
+        */
 
         this.timerStoper = undefined;
         this.questCourante = 0;
@@ -25,15 +43,37 @@ class Quizz extends Game {
         this.socketCreateur.on("afficherSolution", () => this.getSolution());
         this.socketCreateur.on("afficherScore", () => this.getScore());
 
-        this.socketCreateur.on("start", () => {
-            this.questCourante = 0;
-            io.to(this.codeRoom).emit("start");
-            this.getQuestion();
-            this.users.forEach(user => {
-                user.score = 0;
-                user.socket.emit("majScore", user.score)
-            });
+        this.socketCreateur.on("start", () => this.setUpStart());
+    }
 
+    async setUpStart() {
+
+        const nbQuestionDispo = await getNbQuestionDispo();
+        this.tabQuestion = [];
+
+        var questionAleatoire = [];
+        while (questionAleatoire.length < nombreQuestionQuizz) {
+            var r = Math.floor(Math.random() * nbQuestionDispo) + 1;
+            if (questionAleatoire.indexOf(r) === -1) questionAleatoire.push(r);
+        }
+
+
+        for (let i = 0; i < nombreQuestionQuizz; i++) {
+
+            let set = await getQuestionById(questionAleatoire[i]);
+            let questionObject = { question: set.Question, reponse: [set.ReponseA, set.ReponseB, set.ReponseC, set.ReponseD], correct: set.BonneReponse };
+            this.tabQuestion.push(questionObject);
+
+        }
+
+        console.log("--------------------------------");
+        console.log(this.tabQuestion);
+        this.questCourante = 0;
+        io.to(this.codeRoom).emit("start");
+        this.getQuestion();
+        this.users.forEach(user => {
+            user.score = 0;
+            user.socket.emit("majScore", user.score)
         });
     }
 
@@ -42,13 +82,13 @@ class Quizz extends Game {
 
         socket.on("score", (reponse) => {
             this.nbReponse++;
-            this.socketCreateur.emit("nbReponse",this.nbReponse, this.users.length);
-            if (reponse == this.tabQuestion[this.questCourante].correct) {   
+            this.socketCreateur.emit("nbReponse", this.nbReponse, this.users.length);
+            if (reponse == this.tabQuestion[this.questCourante].correct) {
                 getUserById(this.users, socket.id).score++;
-                
+
             }
 
-            if(this.nbReponse == this.users.length){
+            if (this.nbReponse == this.users.length) {
                 this.getSolution();
             }
 
@@ -61,7 +101,9 @@ class Quizz extends Game {
         clearInterval(this.timerStoper);
         this.affichageEvent++;
         this.nbReponse = 0;
-        this.socketCreateur.emit("nbReponse",this.nbReponse, this.users.length);
+        this.socketCreateur.emit("nbReponse", this.nbReponse, this.users.length);
+        
+        this.socketCreateur.emit("nbQuestion", this.questCourante+1, nombreQuestionQuizz);
 
         this.timer(10);
 
@@ -92,12 +134,12 @@ class Quizz extends Game {
         if (this.questCourante == this.tabQuestion.length) {
 
             this.socketCreateur.emit("affichageScore", this.getTabScore(), true);
-            io.to(this.codeRoom).emit("score",true);
+            io.to(this.codeRoom).emit("score", true);
         }
         else {
             this.timer(5);
             this.socketCreateur.emit("affichageScore", this.getTabScore(), false);
-            io.to(this.codeRoom).emit("score",false);
+            io.to(this.codeRoom).emit("score", false);
         }
 
 
@@ -140,42 +182,29 @@ class Quizz extends Game {
 
 }
 
-function getSetOfQuestion(){
-    const mysql = require("mysql");
 
-    const db = mysql.createConnection({
-        host : "localhost",
-        user: "root",
-        password: "",
-        database : "agonline",
+
+getNbQuestionDispo = () => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT count(id)as nb FROM quizz where Categorie="Géographie" ', (error, nbQuestion) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve(nbQuestion[0].nb);
+        });
     });
+};
 
-    db.connect((err) => {
-        if(err){
-            console.log("CONNEXION A LA BASE IMPOSSIBLE");
-        }
-        else {
-            console.log("connected");
-
-            
-            db.query ('SELECT * FROM quizz ', (err, lignes) => {
-                if (err) throw err;
-              
-                console.log ('Données reçues de Db:');
-                console.log (lignes);
-              });
-        }
-        
+getQuestionById = (id) => {
+    return new Promise((resolve, reject) => {
+        db.query('SELECT * FROM question natural join quizz where Categorie="Géographie" and QuestionID="' + id + '"', (error, question) => {
+            if (error) {
+                return reject(error);
+            }
+            return resolve(question[0]);
+        });
     });
-
-
-
-
-
-}
-
-
-
+};
 
 
 module.exports = { Quizz };

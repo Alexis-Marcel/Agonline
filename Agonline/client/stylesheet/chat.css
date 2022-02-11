@@ -215,3 +215,8 @@ aside input[type="submit"]:hover {
   left: 80%;
 }
 
+#numberQuestion {
+
+  position: absolute;
+  right: 80%;
+}
