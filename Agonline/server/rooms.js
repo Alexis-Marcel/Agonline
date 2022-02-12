@@ -12,7 +12,7 @@ function checkValidRoom(roomTry, socket) {
 }
 
 function getRoomByCode(code) {
-    return rooms.find((room) => room.codeRoom === code);
+    return rooms.find((room) => room.codeRoom === code.toUpperCase());
 }
 
 function getRoomByUserId(id) {
