@@ -4,7 +4,7 @@ const { getUserById } = require("../users.js");
 
 const mysql = require("mysql");
 
-const nombreQuestionQuizz = 2;
+const nombreQuestionQuizz = 5;
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -186,7 +186,7 @@ class Quizz extends Game {
 
 getNbQuestionDispo = () => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT count(id)as nb FROM quizz where Categorie="Géographie" ', (error, nbQuestion) => {
+        db.query('SELECT count(*)as nb FROM quizz natural join categorie where CategorieType="Geographie" ', (error, nbQuestion) => {
             if (error) {
                 return reject(error);
             }
@@ -197,7 +197,7 @@ getNbQuestionDispo = () => {
 
 getQuestionById = (id) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM question natural join quizz where Categorie="Géographie" and QuestionID="' + id + '"', (error, question) => {
+        db.query('SELECT * FROM quizz inner join categorie ON quizz.Categorie = categorie.CategorieID inner join question ON quizz.Question = question.QuestionID where categorie.CategorieType ="Geographie" and question.QuestionID="' + id + '"', (error, question) => {
             if (error) {
                 return reject(error);
             }
