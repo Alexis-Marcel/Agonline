@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 12 fév. 2022 à 18:52
+-- Généré le : sam. 12 fév. 2022 à 23:32
 -- Version du serveur : 10.4.22-MariaDB
 -- Version de PHP : 8.0.13
 
@@ -73,7 +73,7 @@ INSERT INTO `question` (`QuestionID`, `Question`, `ReponseA`, `ReponseB`, `Repon
 (11, 'Quelle est la capitale du Qatar ?', 'Doha', 'Dubaï', 'La Valette', 'New Delhi	', 'A'),
 (12, 'Quelle est la capitale du Pérou?', 'Minsk', 'Varsovie', 'Prague', 'Lima	', 'D'),
 (13, 'Quelle est la capitale du Guatemala ?', 'Ouagadougou', 'Amsterdam	', 'Guatemala', 'Chișinău', 'C'),
-(14, 'Quelle est la capitale du Grèce ?', 'Athènes	', 'Lomé', 'Dakar', 'Abuja	', 'A'),
+(14, 'Quelle est la capitale de la Grèce ?', 'Athènes	', 'Lomé', 'Dakar', 'Abuja	', 'A'),
 (15, 'Quelle est la capitale de la Sierra Leone ?', 'Sierra', 'Leone', 'Tel Aviv', 'Freetown', 'D'),
 (16, 'Quelle est la capitale d\'Israel ?', 'Mascate', 'Tel Aviv', 'Gitega', 'Conakry	', 'B'),
 (17, 'Quelle est la capitale de l\'Honduras ?', 'Tegucigalpa', 'Santiago', 'Kampala', 'Hanoï', 'A'),

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <title>Agonline Connexion</title>
+
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="../stylesheet/main.css" rel="stylesheet">
+</head>
+
+<body class="h-100 text-center text-white bg-dark">
+
+        <header class="mb-auto mx-auto p-3">
+            <div>
+                <nav class="nav nav-masthead justify-content-between">
+                    <h3 class="mb-0">Agonline</h3>
+                    <h4>Choissisez votre jeu !</h4>
+                    <a class="nav-direction" href="../index.html"><i id="logoutButton" class="fas fa-x fa-sign-out-alt" title="logout"></i></a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Formulaire de connexion à une game room-->
+        <div class="container h-75 overflow-auto mb-4">
+        <section class="row p-5 p-md-0 justify-content-around text-black">
+              <div class="card col-6 col-md-3 mb-4" style="width: 18rem;">
+                <img src="../assets/images/quizz.PNG" class="card-img-top p-3" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Quizz</h5>
+                  <p class="card-text">Les joueurs sont en compétition en répondant à des questions sur diverses thèmes. Ils obtiennent des points en répondant correctement aux questions proposées aléatoirement.</p>
+                  <a href="../Quizz/quizzMaster.html" class="btn btn-primary">Jouez !</a>
+                </div>
+              </div>
+              <div class="card col-6 col-md-3 mb-4" style="width: 18rem;">
+                <img src="../assets/images/quizz2.PNG" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+              <div class="card col-6 col-md-3 mb-4" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+              <div class="card col-6 col-md-3 mb-4" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+              <div class="card col-6 col-md-3 mb-4" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+              <div class="card col-6 col-md-3 mb-4" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+              </div>
+              
+        </section>
+      </div>
+
+      <footer class="mt-auto text-white-50">
+        <p><strong>©</strong> Copyright 2021 : <strong>Alexis MARCEL</strong> - <strong>Justine PRULIERE</strong> - <strong>Lilian LEBLANC</strong></p>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script/room.js"></script>
+
+
+</body>
+
+</html>
