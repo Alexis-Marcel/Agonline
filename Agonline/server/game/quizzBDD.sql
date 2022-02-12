@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 12 fév. 2022 à 14:30
+-- Généré le : sam. 12 fév. 2022 à 18:52
 -- Version du serveur : 10.4.22-MariaDB
 -- Version de PHP : 8.0.13
 
@@ -69,7 +69,17 @@ INSERT INTO `question` (`QuestionID`, `Question`, `ReponseA`, `ReponseB`, `Repon
 (7, 'Quelle est la capitale de la Suède ?', 'Stockholm	', 'Oslo', 'Amsterdam', 'Helsinki', 'A'),
 (8, 'Quelle est la capitale de la Lettonie ?', 'Vilnius', 'Tallinn', 'Riga', 'Sofia', 'C'),
 (9, 'Quelle est la capitale du Danemark ?', 'Berne', 'Bruxelles', 'Bratislava', 'Copenhague', 'D'),
-(10, 'Quelle est la capitale de la Chine ?', 'Tokyo', 'Pékin', 'Séoul', 'Jakarta	', 'B');
+(10, 'Quelle est la capitale de la Chine ?', 'Tokyo', 'Pékin', 'Séoul', 'Jakarta	', 'B'),
+(11, 'Quelle est la capitale du Qatar ?', 'Doha', 'Dubaï', 'La Valette', 'New Delhi	', 'A'),
+(12, 'Quelle est la capitale du Pérou?', 'Minsk', 'Varsovie', 'Prague', 'Lima	', 'D'),
+(13, 'Quelle est la capitale du Guatemala ?', 'Ouagadougou', 'Amsterdam	', 'Guatemala', 'Chișinău', 'C'),
+(14, 'Quelle est la capitale du Grèce ?', 'Athènes	', 'Lomé', 'Dakar', 'Abuja	', 'A'),
+(15, 'Quelle est la capitale de la Sierra Leone ?', 'Sierra', 'Leone', 'Tel Aviv', 'Freetown', 'D'),
+(16, 'Quelle est la capitale d\'Israel ?', 'Mascate', 'Tel Aviv', 'Gitega', 'Conakry	', 'B'),
+(17, 'Quelle est la capitale de l\'Honduras ?', 'Tegucigalpa', 'Santiago', 'Kampala', 'Hanoï', 'A'),
+(18, 'Quelle est la capitale de l\'Iraq?', 'Séoul	', 'Bucarest	', 'Bagdad	', 'Tunis	', 'C'),
+(19, 'Quelle est la capitale de la Jamaïque ?', 'Damas	', 'Kingston	', 'La Havane', 'Berlin', 'B'),
+(20, 'Quelle est la capitale de Cuba ?', 'La Havane', 'Bakou', 'Ankara', 'Dacca', 'A');
 
 -- --------------------------------------------------------
 
@@ -96,7 +106,17 @@ INSERT INTO `quizz` (`Categorie`, `Question`) VALUES
 (1, 7),
 (1, 8),
 (1, 9),
-(1, 10);
+(1, 10),
+(1, 11),
+(1, 12),
+(1, 13),
+(1, 14),
+(1, 15),
+(1, 16),
+(1, 17),
+(1, 18),
+(1, 19),
+(1, 20);
 
 --
 -- Index pour les tables déchargées
@@ -135,7 +155,7 @@ ALTER TABLE `categorie`
 -- AUTO_INCREMENT pour la table `question`
 --
 ALTER TABLE `question`
-  MODIFY `QuestionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `QuestionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Contraintes pour les tables déchargées
