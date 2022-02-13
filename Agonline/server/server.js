@@ -28,8 +28,8 @@ io.on("connection", (socket) => {
     /**
      * création d'un quizz
      */
-    socket.on("quizzCreation", () => {
-        rooms.push(new Quizz(socket));
+    socket.on("quizzCreation", (jeu) => {
+        rooms.push(new Quizz(socket,jeu));
     });
 
     /**

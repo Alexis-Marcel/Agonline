@@ -3,6 +3,8 @@ const socket = io();
 import { setSolution } from "./affichage.js";
 import { displayMessage } from "../../scriptGlobal/message.js";
 
+const params = new URLSearchParams(window.location.search)
+const type = params.get('type');
 
 let codeRoom;
 
@@ -18,7 +20,7 @@ socket.on("codeRoom", (code) => {
 /**
  * création d'un quizz
  */
-socket.emit("quizzCreation");
+socket.emit("quizzCreation",type);
 
 
 /**

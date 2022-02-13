@@ -22,16 +22,10 @@ db.connect((err) => {
 
 class Quizz extends Game {
 
-    constructor(codeRoom, socketCreateur) {
-        super(codeRoom, socketCreateur);
+    constructor(socketCreateur,type) {
+        super(socketCreateur);
 
-        /*
-        this.tabQuestion = [
-            { question: "Quelle est la capitale de l'ouzbekistan ?", reponse: ["Khartoum", "Addis-Abeba", "Noursoultan", "Tachkent"], correct: "D" },
-            { question: "Quelle est la capital de la Colombie ?", reponse: ["La Havane", "Bogota", "Nairobi", "Helsinki"], correct: "B" },
-            { question: "Quelle est la capital de l'Indonésie ?", reponse: ["Buenos Aires", "Jakarta", "Manille", "Oulan-Bator"], correct: "B" },
-        ];
-        */
+        this.typeQuestion = type;
 
         this.timerStoper = undefined;
         this.questCourante = 0;
@@ -48,7 +42,8 @@ class Quizz extends Game {
 
     async setUpStart() {
 
-        const nbQuestionDispo = await getNbQuestionDispo();
+
+        const nbQuestionDispo = await getNbQuestionDispo(this.typeQuestion);
         this.tabQuestion = [];
 
         var questionAleatoire = [];
@@ -60,7 +55,7 @@ class Quizz extends Game {
 
         for (let i = 0; i < nombreQuestionQuizz; i++) {
 
-            let set = await getQuestionById(questionAleatoire[i]);
+            let set = await getQuestionById(questionAleatoire[i],this.typeQuestion);
             let questionObject = { question: set.Question, reponse: [set.ReponseA, set.ReponseB, set.ReponseC, set.ReponseD], correct: set.BonneReponse };
             this.tabQuestion.push(questionObject);
 
@@ -184,9 +179,9 @@ class Quizz extends Game {
 
 
 
-getNbQuestionDispo = () => {
+getNbQuestionDispo = (typeQuestion) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT count(*)as nb FROM quizz natural join categorie where CategorieType="Geographie" ', (error, nbQuestion) => {
+        db.query('SELECT count(*)as nb FROM quizz natural join categorie where CategorieType="'+typeQuestion+'" ', (error, nbQuestion) => {
             if (error) {
                 return reject(error);
             }
@@ -195,9 +190,9 @@ getNbQuestionDispo = () => {
     });
 };
 
-getQuestionById = (id) => {
+getQuestionById = (id,typeQuestion) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM quizz inner join categorie ON quizz.Categorie = categorie.CategorieID inner join question ON quizz.Question = question.QuestionID where categorie.CategorieType ="Geographie" and question.QuestionID="' + id + '"', (error, question) => {
+        db.query('SELECT * FROM quizz inner join categorie ON quizz.Categorie = categorie.CategorieID inner join question ON quizz.Question = question.QuestionID where categorie.CategorieType ="'+typeQuestion+'" and question.QuestionID="' + id + '"', (error, question) => {
             if (error) {
                 return reject(error);
             }
