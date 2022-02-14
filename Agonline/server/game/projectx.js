@@ -1,6 +1,6 @@
 const {Game} = require("./game");
-const {io} = require("../server");
-const {getUserById} = require("../users");
+const {io, botName} = require("../server");
+const {getUserById, removeUser} = require("../users");
 
 class projectx extends Game {
 
@@ -24,6 +24,12 @@ class projectx extends Game {
         };
         socket.emit('currentPlayers', this.players);
         socket.broadcast.emit('newPlayer', this.players[socket.id]);
+    }
+    removeSocket(socket) {
+        super.removeSocket(socket);
+        delete this.players[socket.id];
+        io.emit('disconnectJoueur', socket.id);
+        console.log('user disconnected');
     }
 
     playerMovement(movementData){
