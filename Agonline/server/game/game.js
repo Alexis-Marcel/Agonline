@@ -4,7 +4,7 @@ const { removeUser, getUserById} = require("../users.js");
 
 const CreatorName = "MASTER";
 
-// constructeur d'une game
+// constructeur d'une gamePlayer
 
 class Game {
     constructor(socketCreateur) {

@@ -14,8 +14,9 @@ module.exports = { io, botName };
 const { checkValidName} = require("./users.js");
 const { rooms, checkValidRoom, getRoomByCode } = require("./rooms.js");
 const { Quizz } = require("./game/quizz.js");
-
+const {projectx} = require("./game/projectx");
 require("./spam.js");
+
 
 
 io.on("connection", (socket) => {
@@ -31,7 +32,12 @@ io.on("connection", (socket) => {
     socket.on("quizzCreation", (jeu) => {
         rooms.push(new Quizz(socket,jeu));
     });
-
+    /**
+     * Création d'un jeu projectX
+     */
+    socket.on("creationProjectX", (jeu) => {
+        rooms.push(new projectx(socket,jeu));
+    });
     /**
      * connexion du joueur sur la page gameRoom.html
      */

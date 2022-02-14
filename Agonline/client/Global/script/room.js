@@ -9,7 +9,6 @@ $(".room-inputarea").on("submit", function( event ) {
     socket.emit("checkRoom", codeRoom);
     
 });
-
 socket.on("checkRoom", (destination) => {
     window.location.href = destination;
 });
