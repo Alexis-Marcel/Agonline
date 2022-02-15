@@ -27,18 +27,23 @@ function create() {
     let self = this;
     this.socket = io();
     let codeRoom;
+
     this.socket.on("codeRoom", (code) => {
         codeRoom = code;
         $("#codeRoom").val(codeRoom);
         this.socket.emit("userNumber", codeRoom);
     });
+
     this.socket.on("userNumber", (number) => {
         $("#nombreJoueur").val(number);
         $("#userNumberChat").text(number);
     });
+
     this.socket.emit("creationProjectX");
+
     this.otherPlayers = this.physics.add.group();
-    this.socket.on('currentPlayers', function (players) {
+
+    this.socket.on('currentPlayers', function () {
         Object.keys(players).forEach(function (id) {
             if (players[id].playerId === self.socket.id) {
                 addPlayer(self, players[id]);
@@ -46,10 +51,13 @@ function create() {
                 addOtherPlayers(self, players[id]);
             }
         });
+        console.log("ça marche");
     });
+
     this.socket.on('newPlayer', function (playerInfo) {
         addOtherPlayers(self, playerInfo);
     });
+
     this.socket.on('disconnectJoueur', function (playerId) {
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
             if (playerId === otherPlayer.playerId) {
@@ -57,7 +65,9 @@ function create() {
             }
         });
     });
+
     this.cursors = this.input.keyboard.createCursorKeys();
+
     this.socket.on('playerMoved', function (playerInfo) {
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
             if (playerInfo.playerId === otherPlayer.playerId) {
