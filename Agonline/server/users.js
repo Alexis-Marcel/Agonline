@@ -25,6 +25,4 @@ function getUserById(users,id) {
 
 
 
-
-
 module.exports = { checkValidName, removeUser, getUserById};
