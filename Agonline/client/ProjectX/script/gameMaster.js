@@ -14,7 +14,6 @@ var config = {
     scene: {
         preload: preload,
         create: create,
-        update: update
     }
 };
 var game = new Phaser.Game(config);
@@ -43,6 +42,7 @@ function create() {
 
     this.otherPlayers = this.physics.add.group();
 
+    /* useless
     this.socket.on('currentPlayers', function () {
         Object.keys(players).forEach(function (id) {
             if (players[id].playerId === self.socket.id) {
@@ -53,10 +53,9 @@ function create() {
         });
         console.log("ça marche");
     });
+    */
 
-    this.socket.on('newPlayer', function (playerInfo) {
-        addOtherPlayers(self, playerInfo);
-    });
+    this.socket.on('newPlayer',  (playerInfo) => addOtherPlayers(self, playerInfo));
 
     this.socket.on('disconnectJoueur', function (playerId) {
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
@@ -65,8 +64,6 @@ function create() {
             }
         });
     });
-
-    this.cursors = this.input.keyboard.createCursorKeys();
 
     this.socket.on('playerMoved', function (playerInfo) {
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
@@ -77,11 +74,6 @@ function create() {
         });
     });
 }
-
-function update() {
-}
-
-
 
 function addOtherPlayers(self, playerInfo) {
     const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);

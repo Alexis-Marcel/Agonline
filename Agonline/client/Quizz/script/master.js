@@ -103,7 +103,7 @@ function displayQuestion(set) {
   setSolution("cacher", solution);
   setTimer("afficher");
   setNbReponse("afficher");
-  $("#gamePlayer").removeClass("d-none");
+  $("#game").removeClass("d-none");
   $("#score").addClass("d-none");
 
   $("#affichageScore div").remove();
@@ -168,7 +168,7 @@ function displayScore(score, end) {
     compte++;
   });
 
-  $("#gamePlayer").addClass("d-none");
+  $("#game").addClass("d-none");
   $("#score").removeClass("d-none");
 
 }

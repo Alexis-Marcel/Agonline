@@ -39,6 +39,8 @@ class Game {
         io.to(this.codeRoom).emit("userNumber", nbJoueur);
 
         socket.on("disconnect", () => this.removeSocket(socket));
+
+        return user;
     }
 
     removeSocket(socket) {

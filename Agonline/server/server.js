@@ -35,8 +35,8 @@ io.on("connection", (socket) => {
     /**
      * Création d'un jeu projectX
      */
-    socket.on("creationProjectX", (jeu) => {
-        rooms.push(new projectx(socket,jeu));
+    socket.on("creationProjectX", () => {
+        rooms.push(new projectx(socket));
     });
     /**
      * connexion du joueur sur la page gameRoom.html
@@ -47,8 +47,9 @@ io.on("connection", (socket) => {
      * initialisation du nom du joueur dans la page joinGame.html
      */
     socket.on("checkLog", (name,room) => {
-        if (checkValidName(name, socket, getRoomByCode(room).users)) {
-            destination = "../Quizz/quizzPlayer.html?room=" + room;
+        let roomCurrent = getRoomByCode(room)
+        if (checkValidName(name, socket, roomCurrent.users)) {
+            destination = roomCurrent.destinationClient;
             socket.emit("checkLog", destination);
         }
     });

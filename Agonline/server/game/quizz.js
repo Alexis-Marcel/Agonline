@@ -25,6 +25,8 @@ class Quizz extends Game {
     constructor(socketCreateur,type) {
         super(socketCreateur);
 
+        this.destinationClient = "../Quizz/quizzPlayer.html?room=" + this.codeRoom;
+
         this.typeQuestion = type;
 
         this.timerStoper = undefined;
@@ -73,13 +75,13 @@ class Quizz extends Game {
     }
 
     addUser(socket, name) {
-        super.addUser(socket, name);
+        const user = super.addUser(socket, name);
 
         socket.on("score", (reponse) => {
             this.nbReponse++;
             this.socketCreateur.emit("nbReponse", this.nbReponse, this.users.length);
             if (reponse == this.tabQuestion[this.questCourante].correct) {
-                getUserById(this.users, socket.id).score++;
+                user.score++;
 
             }
 
