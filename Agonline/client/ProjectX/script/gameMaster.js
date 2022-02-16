@@ -77,11 +77,7 @@ function create() {
 
 function addOtherPlayers(self, playerInfo) {
     const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    if (playerInfo.team === 'blue') {
-        otherPlayer.setTint(0x0000ff);
-    } else {
-        otherPlayer.setTint(0xff0000);
-    }
+    otherPlayer.tint = playerInfo.color;
     otherPlayer.playerId = playerInfo.playerId;
     self.otherPlayers.add(otherPlayer);
 }

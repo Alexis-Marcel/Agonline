@@ -12,4 +12,8 @@ function getRandomColor() {
     return `rgb(${colors.join(",")})`;
 }
 
-module.exports = { getRandomColor };
+
+function rgbToHex(r, g, b) {
+    return "0x" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+module.exports = { getRandomColor , rgbToHex };
