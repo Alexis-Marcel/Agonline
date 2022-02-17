@@ -44,19 +44,18 @@ var playerInfo
   * connexion  aprouvée
   */
  socket.on("login", () => {
-    var gamePlayer = new Phaser.Game(config);
     socket.on("setUp",(info) => {
        playerInfo = info;
+       var gamePlayer = new Phaser.Game(config);
+
     });
  });
 
 function create() {
     self = this;
     this.cursors = this.input.keyboard.createCursorKeys();
+    addPlayer(self,playerInfo);
 
-    socket.on("addPlayer",(info) => {
-        addPlayer(self,info);
-    });
 }
 
 function addPlayer(self,playerInfo) {
