@@ -50,6 +50,9 @@ var playerInfo
 
     });
  });
+function preload() {
+    this.load.image('ship', '../../assets/images/enemyBlack5.png');
+}
 
 function create() {
     self = this;
@@ -59,8 +62,8 @@ function create() {
 }
 
 function addPlayer(self,playerInfo) {
-    self.ship = self.physics.add.image(playerInfo.x, playerInfo.y, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    console.log(playerInfo.color);
+    self.ship = self.physics.add.image(playerInfo.x,playerInfo.y).setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    self.NewShip = self.physics.add.image(config.width/2, config.height/2, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40)
     self.ship.setTint(playerInfo.color);
     self.ship.setDrag(100);
     self.ship.setAngularDrag(100);
@@ -71,10 +74,13 @@ function update() {
     if (this.ship) {
         if (this.cursors.left.isDown) {
             this.ship.setAngularVelocity(-150);
+            this.NewShip.setAngularVelocity(-150);
         } else if (this.cursors.right.isDown) {
             this.ship.setAngularVelocity(150);
+            this.NewShip.setAngularVelocity(150);
         } else {
             this.ship.setAngularVelocity(0);
+            this.NewShip.setAngularVelocity(0);
         }
 
         if (this.cursors.up.isDown) {
