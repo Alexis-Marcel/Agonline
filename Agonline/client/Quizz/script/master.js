@@ -14,6 +14,8 @@ let codeRoom;
 socket.on("codeRoom", (code) => {
   codeRoom = code;
   $("#codeRoom").val(codeRoom);
+  $("#codeRoomQrcode").text("Code de la room : "+codeRoom);
+  creerQRC();
   socket.emit("userNumber", codeRoom);
 });
 
@@ -209,18 +211,12 @@ function copy() {
 $("#copy").on("click", copy);
 
 function creerQRC(){
-  let url = "http://localhost:3000/Global/joinGame.html"+"?room="+document.getElementById("codeRoom").value;
+  let url = window.location.origin+"/Global/joinGame.html?room="+codeRoom;
   let qrc = "https://chart.googleapis.com/chart?cht=qr&chl=" + encodeURIComponent(url) + "&chs=200x200&choe=UTF-8&chld=L|0";
-  document.getElementById("qr").src = qrc;
-  console.log("url: " + url);
+  $("#img-qrcode").attr("src", qrc);
+  console.log(url);
 }
 
-function popup(){
-  creerQRC();
-  window.open("qrcode.html", "QR CODE", "height=210, width=210, menubar='no', toolbar='no', scrollbars='no'");
-}
-
-$("#qrcode").on("click", popup);
 
 
 

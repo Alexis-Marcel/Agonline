@@ -14,9 +14,9 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-   /* if (err) {
+   if (err) {
         throw "CONNEXION A LA BASE IMPOSSIBLE\n\n" + err;
-    }*/
+    }
 });
 
 
@@ -47,6 +47,10 @@ class Quizz extends Game {
 
         const nbQuestionDispo = await getNbQuestionDispo(this.typeQuestion);
         this.tabQuestion = [];
+
+        if(nbQuestionDispo< nombreQuestionQuizz){
+            throw "Pas assez de question"
+        }
 
         var questionAleatoire = [];
         while (questionAleatoire.length < nombreQuestionQuizz) {
@@ -102,7 +106,7 @@ class Quizz extends Game {
         
         this.socketCreateur.emit("nbQuestion", this.questCourante+1, nombreQuestionQuizz);
 
-        this.timer(10);
+        this.timer(10);  
 
         this.socketCreateur.emit("affichageQuestion", this.tabQuestion[this.questCourante]);
         io.to(this.codeRoom).emit("question");
@@ -152,14 +156,16 @@ class Quizz extends Game {
 
     timer(time) {
 
-        this.timeleft = time;
+        this.timeleft = time-1;
+        this.socketCreateur.emit("timer", time);
+
         this.timerStoper = setInterval(() => this.timeFunction(), 1000);
     }
 
     timeFunction() {
 
         if (this.timeleft >= 0) {
-            io.to(this.codeRoom).emit("timer", this.timeleft);
+            this.socketCreateur.emit("timer", this.timeleft);
         }
         else {
             switch (this.affichageEvent) {
