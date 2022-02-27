@@ -11,6 +11,7 @@ const config = {
         }
     },
     scene: {
+        preload: preload,
         create: create,
         update: update
     }
@@ -50,6 +51,7 @@ var playerInfo
 
     });
  });
+
 function preload() {
     this.load.image('ship', '../../assets/images/enemyBlack5.png');
 }
@@ -64,7 +66,7 @@ function create() {
 function addPlayer(self,playerInfo) {
     self.ship = self.physics.add.image(playerInfo.x,playerInfo.y).setOrigin(0.5, 0.5).setDisplaySize(53, 40);
     self.NewShip = self.physics.add.image(config.width/2, config.height/2, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40)
-    self.ship.setTint(playerInfo.color);
+    self.NewShip.setTint(playerInfo.color);
     self.ship.setDrag(100);
     self.ship.setAngularDrag(100);
     self.ship.setMaxVelocity(200);
