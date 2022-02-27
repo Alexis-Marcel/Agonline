@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : sam. 12 fév. 2022 à 23:32
+-- Généré le : dim. 27 fév. 2022 à 16:28
 -- Version du serveur : 10.4.22-MariaDB
 -- Version de PHP : 8.0.13
 
@@ -37,7 +37,8 @@ CREATE TABLE `categorie` (
 --
 
 INSERT INTO `categorie` (`CategorieID`, `CategorieType`) VALUES
-(1, 'Geographie');
+(1, 'Geographie'),
+(2, 'Sport');
 
 -- --------------------------------------------------------
 
@@ -79,7 +80,18 @@ INSERT INTO `question` (`QuestionID`, `Question`, `ReponseA`, `ReponseB`, `Repon
 (17, 'Quelle est la capitale de l\'Honduras ?', 'Tegucigalpa', 'Santiago', 'Kampala', 'Hanoï', 'A'),
 (18, 'Quelle est la capitale de l\'Iraq?', 'Séoul	', 'Bucarest	', 'Bagdad	', 'Tunis	', 'C'),
 (19, 'Quelle est la capitale de la Jamaïque ?', 'Damas	', 'Kingston	', 'La Havane', 'Berlin', 'B'),
-(20, 'Quelle est la capitale de Cuba ?', 'La Havane', 'Bakou', 'Ankara', 'Dacca', 'A');
+(20, 'Quelle est la capitale de Cuba ?', 'La Havane', 'Bakou', 'Ankara', 'Dacca', 'A'),
+(21, 'En quelle année ont été crées les jeux olympiques?', '1896', '1912', '1938', '2000', 'A'),
+(22, 'Combien de pays sont représentés aux Jeux Olympiques?', '147', '180', '206', '324', 'C'),
+(23, 'Dans quelle ville se tiendront les Jeux Olympiques de 2028?', 'Paris', 'Londres', 'Los Angeles', 'Séoul', 'C'),
+(24, 'Dans quelle ville se tiendront les Jeux olympiques de 2024?', 'Berlin', 'Londres', 'Athènes', 'Paris', 'D'),
+(25, 'Combien de fois Usain Bolt a-t-il été médaillé d\'or aux Jeux Olympiques?', '5', '8', '13', '19', 'B'),
+(26, 'En quelle années les femmes ont-elles eu le droit de participer aux jeux olympiques?', '1896', '1900', '1912', '1936', 'B'),
+(27, 'Quel est le pourcentage de femmes qui ont participé aux Jeux Olympiques de Rio en 2016?', '12%', '27%', '39%', '45%', 'D'),
+(28, 'En quelle année a été crée le tournoi de Roland Garros?', '1888', '1891', '1896', '1900', 'B'),
+(29, 'Quel est le sport caractéristique du tournoi de Roland Garros?', 'Natation', 'Tennis de table', 'Basket', 'Tennis', 'D'),
+(30, 'Lequel de ces prix du tournoi de Roland Garros n\'existe pas?', 'Le prix citron', 'Le prix bourgeon', 'Le prix orange', 'Le prix kaki', 'D'),
+(31, 'L\'homme qui a donné son nom au tournoi Roland Garros était...', 'Tennisman', 'Aviateur', 'Footballeur', 'Conducteur de formule 1', 'B');
 
 -- --------------------------------------------------------
 
@@ -116,7 +128,18 @@ INSERT INTO `quizz` (`Categorie`, `Question`) VALUES
 (1, 17),
 (1, 18),
 (1, 19),
-(1, 20);
+(1, 20),
+(2, 21),
+(2, 22),
+(2, 23),
+(2, 24),
+(2, 25),
+(2, 26),
+(2, 27),
+(2, 28),
+(2, 29),
+(2, 30),
+(2, 31);
 
 --
 -- Index pour les tables déchargées
@@ -149,13 +172,13 @@ ALTER TABLE `quizz`
 -- AUTO_INCREMENT pour la table `categorie`
 --
 ALTER TABLE `categorie`
-  MODIFY `CategorieID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `CategorieID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `question`
 --
 ALTER TABLE `question`
-  MODIFY `QuestionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `QuestionID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- Contraintes pour les tables déchargées

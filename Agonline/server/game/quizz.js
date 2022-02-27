@@ -45,30 +45,29 @@ class Quizz extends Game {
     async setUpStart() {
 
 
-        const nbQuestionDispo = await getNbQuestionDispo(this.typeQuestion);
+        const allQuestion = await getQuestionByType(this.typeQuestion);
         this.tabQuestion = [];
 
-        if(nbQuestionDispo< nombreQuestionQuizz){
-            throw "Pas assez de question"
+        if(allQuestion.length < nombreQuestionQuizz){
+            throw "Pas assez de question";
         }
+
 
         var questionAleatoire = [];
         while (questionAleatoire.length < nombreQuestionQuizz) {
-            var r = Math.floor(Math.random() * nbQuestionDispo) + 1;
+            var r = Math.floor(Math.random() * allQuestion.length) + 1;
             if (questionAleatoire.indexOf(r) === -1) questionAleatoire.push(r);
         }
 
-
         for (let i = 0; i < nombreQuestionQuizz; i++) {
 
-            let set = await getQuestionById(questionAleatoire[i],this.typeQuestion);
+            let set = allQuestion[questionAleatoire[i]];
             let questionObject = { question: set.Question, reponse: [set.ReponseA, set.ReponseB, set.ReponseC, set.ReponseD], correct: set.BonneReponse };
             this.tabQuestion.push(questionObject);
 
         }
 
-        console.log("--------------------------------");
-        console.log(this.tabQuestion);
+
         this.questCourante = 0;
         io.to(this.codeRoom).emit("start");
         this.getQuestion();
@@ -189,7 +188,7 @@ class Quizz extends Game {
 
 getNbQuestionDispo = (typeQuestion) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT count(*)as nb FROM quizz natural join categorie where CategorieType="'+typeQuestion+'" ', (error, nbQuestion) => {
+        db.query('SELECT count(quizz.Question) as nb FROM quizz join categorie on quizz.Categorie = Categorie.CategorieID where Categorie.CategorieType="'+typeQuestion+'" ', (error, nbQuestion) => {
             if (error) {
                 return reject(error);
             }
@@ -198,13 +197,13 @@ getNbQuestionDispo = (typeQuestion) => {
     });
 };
 
-getQuestionById = (id,typeQuestion) => {
+getQuestionByType = (typeQuestion) => {
     return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM quizz inner join categorie ON quizz.Categorie = categorie.CategorieID inner join question ON quizz.Question = question.QuestionID where categorie.CategorieType ="'+typeQuestion+'" and question.QuestionID="' + id + '"', (error, question) => {
+        db.query('SELECT * FROM quizz inner join categorie ON quizz.Categorie = categorie.CategorieID inner join question ON quizz.Question = question.QuestionID where categorie.CategorieType ="'+typeQuestion+'"', (error, question) => {
             if (error) {
                 return reject(error);
             }
-            return resolve(question[0]);
+            return resolve(question);
         });
     });
 };
