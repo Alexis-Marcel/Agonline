@@ -15,6 +15,12 @@ function getRoomByCode(code) {
     return rooms.find((room) => room.codeRoom === code.toUpperCase());
 }
 
+function getNumberUsersByCode(code) {
+    let room = getRoomByCode(code);
+    if(room == undefined) return -1
+    else room.users.length;
+}
+
 function getRoomByUserId(id) {
     rooms.forEach((room) => {
         if(room.users.find(user => user.socket.id === id) !== undefined)
@@ -22,8 +28,14 @@ function getRoomByUserId(id) {
     })
 }
 
+function enterInARoom(socket,room,name){
+
+    let room = getRoomByCode(room);
+    if(room != undefined) room.addUser(socket,name);
+}
+
 function getRoomBySocketCreateur(s) {
     return rooms.find((room) => room.socketCreateur.id === s.id);
 }
 
-module.exports = { rooms,getRoomByUserId, checkValidRoom, getRoomByCode, getRoomBySocketCreateur };
+module.exports = { rooms,getRoomByUserId, checkValidRoom, getRoomByCode, getRoomBySocketCreateur, getNumberUsersByCode, enterInARoom };

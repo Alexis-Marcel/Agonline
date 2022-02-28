@@ -12,7 +12,7 @@ const botName = "ChatBot";
 module.exports = { io, botName };
 
 const { checkValidName} = require("./users.js");
-const { rooms, checkValidRoom, getRoomByCode } = require("./rooms.js");
+const { rooms, checkValidRoom, getRoomByCode, getNumberUsersByCode, enterInARoom } = require("./rooms.js");
 const { Quizz } = require("./game/quizz.js");
 const {projectx} = require("./game/projectx");
 require("./spam.js");
@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
     /**
      * envoie du nombre de participant dans la room
      */
-    socket.on("userNumber", (room) => socket.emit("userNumber", getRoomByCode(room).users.length));
+    socket.on("userNumber", (room) => socket.emit("userNumber", getNumberUsersByRoom(room)));
 
     /**
      * création d'un quizz
@@ -41,16 +41,18 @@ io.on("connection", (socket) => {
     /**
      * connexion du joueur sur la page gameRoom.html
      */
-    socket.on("login", (name, room) => getRoomByCode(room).addUser(socket,name));
+    socket.on("login", (name, room) => enterInARoom(socket,room,name));
 
     /**
      * initialisation du nom du joueur dans la page joinGame.html
      */
     socket.on("checkLog", (name,room) => {
-        let roomCurrent = getRoomByCode(room)
-        if (checkValidName(name, socket, roomCurrent.users,roomCurrent.start)) {
-            destination = roomCurrent.destinationClient;
-            socket.emit("checkLog", destination);
+        let roomCurrent = getRoomByCode(room);
+        if(roomCurrent != undefined){ 
+            if (checkValidName(name, socket, roomCurrent.users,roomCurrent.start)) {
+                destination = roomCurrent.destinationClient;
+                socket.emit("checkLog", destination);
+            }
         }
     });
 
