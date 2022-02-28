@@ -14,10 +14,10 @@ const db = mysql.createConnection({
 });
 
 db.connect((err) => {
-   if (err) {
-        throw "CONNEXION A LA BASE IMPOSSIBLE\n\n" + err;
-    }
-});
+    if (err) {
+         throw "CONNEXION A LA BASE IMPOSSIBLE\n\n" + err;
+     }
+ });
 
 
 class Quizz extends Game {
@@ -29,6 +29,8 @@ class Quizz extends Game {
 
         this.typeQuestion = type;
 
+        this.start = false;
+
         this.timerStoper = undefined;
         this.questCourante = 0;
         this.affichageEvent = 0;
@@ -39,32 +41,34 @@ class Quizz extends Game {
         this.socketCreateur.on("afficherSolution", () => this.getSolution());
         this.socketCreateur.on("afficherScore", () => this.getScore());
 
-        this.socketCreateur.on("start", () => this.setUpStart());
+        this.setUpStart();
+        this.socketCreateur.on("start", () => this.startGame());
     }
 
-    async setUpStart() {
+    async setUpStart(){
 
-
-        const allQuestion = await getQuestionByType(this.typeQuestion);
-        console.log(allQuestion.length)
-        this.tabQuestion = [];
-
-        if(allQuestion.length < nombreQuestionQuizz){
+         this.allQuestion = await getQuestionByType(this.typeQuestion);
+        if(this.allQuestion.length < nombreQuestionQuizz){
             throw "Pas assez de question";
-        }
+        }   
+    }
+
+
+    startGame() {
+
+        this.start = true;
+        this.tabQuestion = [];
 
 
         var questionAleatoire = [];
         while (questionAleatoire.length < nombreQuestionQuizz) {
-            var r = Math.floor(Math.random() * allQuestion.length-1) + 1;
+            var r = Math.floor(Math.random() * this.allQuestion.length-1) + 1;
             if (questionAleatoire.indexOf(r) === -1) questionAleatoire.push(r);
         }
 
-        console.log(questionAleatoire)
-
         for (let i = 0; i < nombreQuestionQuizz; i++) {
 
-            let set = allQuestion[questionAleatoire[i]];
+            let set = this.allQuestion[questionAleatoire[i]];
             let questionObject = { question: set.Question, reponse: [set.ReponseA, set.ReponseB, set.ReponseC, set.ReponseD], correct: set.BonneReponse };
             this.tabQuestion.push(questionObject);
 
@@ -138,6 +142,7 @@ class Quizz extends Game {
 
             this.socketCreateur.emit("affichageScore", this.getTabScore(), true);
             io.to(this.codeRoom).emit("score", true);
+            this.start=false;
         }
         else {
             this.timer(5);
@@ -190,6 +195,7 @@ class Quizz extends Game {
 
 
 getQuestionByType = (typeQuestion) => {
+    console.log("get");
     return new Promise((resolve, reject) => {
         db.query('SELECT * FROM quizz inner join categorie ON quizz.Categorie = categorie.CategorieID inner join question ON quizz.Question = question.QuestionID where categorie.CategorieType ="'+typeQuestion+'"', (error, question) => {
             if (error) {

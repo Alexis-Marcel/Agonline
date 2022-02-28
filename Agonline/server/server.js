@@ -48,7 +48,7 @@ io.on("connection", (socket) => {
      */
     socket.on("checkLog", (name,room) => {
         let roomCurrent = getRoomByCode(room)
-        if (checkValidName(name, socket, roomCurrent.users)) {
+        if (checkValidName(name, socket, roomCurrent.users,roomCurrent.start)) {
             destination = roomCurrent.destinationClient;
             socket.emit("checkLog", destination);
         }

@@ -1,5 +1,5 @@
 
-function checkValidName(name, socket, users) {
+function checkValidName(name, socket, users,start) {
     
     if (name === "") {
         socket.emit("alert", "Choissisez un nom pour pouvoir jouer.");
@@ -9,7 +9,9 @@ function checkValidName(name, socket, users) {
         socket.emit("alert", "Seul les lettres, nombres et caractères _ - sont autorisés.");
     } else if (users.some((user) => user.name === name)) {
         socket.emit("alert", `Le nom ${name} est déjà utilisé.`);
-    } else {
+    } else if(start){
+        socket.emit("alert", `La partie a déjà commencé.`);
+    }else{ 
         return true;
     }
 }
