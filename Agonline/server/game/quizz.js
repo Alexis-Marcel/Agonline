@@ -46,6 +46,7 @@ class Quizz extends Game {
 
 
         const allQuestion = await getQuestionByType(this.typeQuestion);
+        console.log(allQuestion.length)
         this.tabQuestion = [];
 
         if(allQuestion.length < nombreQuestionQuizz){
@@ -55,9 +56,11 @@ class Quizz extends Game {
 
         var questionAleatoire = [];
         while (questionAleatoire.length < nombreQuestionQuizz) {
-            var r = Math.floor(Math.random() * allQuestion.length) + 1;
+            var r = Math.floor(Math.random() * allQuestion.length-1) + 1;
             if (questionAleatoire.indexOf(r) === -1) questionAleatoire.push(r);
         }
+
+        console.log(questionAleatoire)
 
         for (let i = 0; i < nombreQuestionQuizz; i++) {
 
@@ -185,17 +188,6 @@ class Quizz extends Game {
 }
 
 
-
-getNbQuestionDispo = (typeQuestion) => {
-    return new Promise((resolve, reject) => {
-        db.query('SELECT count(quizz.Question) as nb FROM quizz join categorie on quizz.Categorie = Categorie.CategorieID where Categorie.CategorieType="'+typeQuestion+'" ', (error, nbQuestion) => {
-            if (error) {
-                return reject(error);
-            }
-            return resolve(nbQuestion[0].nb);
-        });
-    });
-};
 
 getQuestionByType = (typeQuestion) => {
     return new Promise((resolve, reject) => {
