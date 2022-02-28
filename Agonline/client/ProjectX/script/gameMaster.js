@@ -1,9 +1,24 @@
 
 var config = {
     type: Phaser.AUTO,
-    parent: 'phaser-example',
+    parent: 'mygame',
     width: 800,
     height: 600,
+    scale: { mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        min: {
+            width: 800,
+            height: 600
+        },
+        // Or set minimum size like these
+        // mixWidth: 800,
+        // mixHeight: 600,
+
+        // Maximum size
+        max: {
+            width: 1600,
+            height: 900
+        }},
     physics: {
         default: 'arcade',
         arcade: {
@@ -23,6 +38,7 @@ function preload() {
 }
 
 function create() {
+
     let self = this;
     this.socket = io();
     let codeRoom;

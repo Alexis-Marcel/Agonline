@@ -1,8 +1,7 @@
 const config = {
     type: Phaser.AUTO,
-    parent: 'phaser-example',
-    width: 800,
-    height: 600,
+    scale: { mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH},
     physics: {
         default: 'arcade',
         arcade: {
@@ -53,7 +52,8 @@ var playerInfo
  });
 
 function preload() {
-    this.load.image('ship', '../../assets/images/enemyBlack5.png');
+    this.load.image('ship', '../../assets/images/enemyBlack5.png')
+    this.canvas = this.sys.game.canvas;
 }
 
 function create() {
@@ -65,7 +65,7 @@ function create() {
 
 function addPlayer(self,playerInfo) {
     self.ship = self.physics.add.image(playerInfo.x,playerInfo.y).setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    self.NewShip = self.physics.add.image(config.width/2, config.height/2, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40)
+    self.NewShip = self.physics.add.image(self.canvas.width/2,self.canvas.height/2, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40)
     self.NewShip.setTint(playerInfo.color);
     self.ship.setDrag(100);
     self.ship.setAngularDrag(100);
