@@ -12,6 +12,9 @@ class survival extends Game {
         this.destinationClient = "../Survival/gamePlayer.html?room=" + this.codeRoom;
         this.socketCreateur.on("score", (playerId, score) => this.majScore(playerId,score));
         this.socketCreateur.on("gameOver", (playerId) => this.majGameOver(playerId));
+
+        this.socketCreateur.on("start", () => this.startGame());
+
     }
 
     addUser(socket, name) {
@@ -28,6 +31,11 @@ class survival extends Game {
         super.removeSocket(socket);
         io.emit('disconnectJoueur', socket.id);
         console.log('user disconnected');
+    }
+
+    startGame(){
+
+        io.to(this.codeRoom).emit("start");
     }
 
     majScore(playerId,score){

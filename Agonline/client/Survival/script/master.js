@@ -1,7 +1,12 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    scale: {
+        mode: Phaser.Scale.FIT ,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        parent: game,
+        width: 800,
+        height: 600,
+    },
     physics: {
         default: 'arcade',
         arcade: {
@@ -22,10 +27,27 @@ let codeRoom;
 socket.on("codeRoom", (code) => {
     codeRoom = code;
     $("#codeRoom").val(codeRoom);
+    $("#codeRoomQrcode").text("Code de la room : "+codeRoom);
+
+
+    /**
+     * initialisation du bouton pour lancer le jeu
+     */
+    $("#start-button").on("click", function () {
+
+        socket.emit("start");
+    });
 
     var game = new Phaser.Game(config);
 
+    socket.on("start", () => {
+      $("#game").removeClass("d-none");
+      $("#waitMessage").addClass("d-none");
+    });
+
     socket.emit("userNumber", codeRoom);
+
+    creerQRC();
 });
 
 socket.on("userNumber", (number) => {
@@ -34,6 +56,7 @@ socket.on("userNumber", (number) => {
 });
 
 socket.emit("survivalGame");
+
 
 var stars;
 var bombs;
@@ -217,3 +240,10 @@ function copy() {
 }
 
 $("#copy").on("click", copy);
+
+function creerQRC(){
+    let url = window.location.origin+"/Global/joinGame.html?room="+codeRoom;
+    let qrc = "https://chart.googleapis.com/chart?cht=qr&chl=" + encodeURIComponent(url) + "&chs=200x200&choe=UTF-8&chld=L|0";
+    $("#img-qrcode").attr("src", qrc);
+    console.log(url);
+  }

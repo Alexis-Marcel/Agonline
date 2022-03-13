@@ -1,16 +1,23 @@
+import VirtualJoystickPlugin from '/phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
+
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 300 },
-            debug: false
-        }
+    scale: {
+        mode: Phaser.Scale.FIT ,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        parent: game,
+        width: 800,
+        height: 600,
+    },
+    plugins: {
+        global: [{
+            key: 'rexVirtualJoystick',
+            plugin: VirtualJoystickPlugin,
+            start: true
+        },
+         ]
     },
     scene: {
-        preload: preload,
         create: create,
         update: update
     }
@@ -39,72 +46,118 @@ const socket = io();
  });
  socket.emit("userNumber", room);
  
-var playerInfo
  /**
   * connexion  aprouvée
   */
  socket.on("login", () => {
-    socket.on("setUp",(info) => {
-       playerInfo = info;
-       var gamePlayer = new Phaser.Game(config);
 
+    socket.on("start", () => {
+        $("#waitMessage").addClass("d-none");
+        $("#game").removeClass("d-none");
+        var gamePlayer = new Phaser.Game(config);
+        
     });
+
  });
 
-var player;
 var cursors;
 var score = 0;
 var scoreText;
 var gameOver = false;
 
-var game = new Phaser.Game(config);
-
-function preload ()
-{
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
-    this.load.image('star', 'assets/star.png');
-    this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-}
 
 function create ()
 {
 
-    
-    // The player and its settings
-    player = this.physics.add.sprite(100, 450, 'dude');
 
-    //  Player physics properties. Give the little guy a slight bounce.
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
-    
+    //cursors = this.input.keyboard.createCursorKeys();
 
-    //  Input Events
-    cursors = this.input.keyboard.createCursorKeys();
+    var joystick = this.plugins.get('rexVirtualJoystick').add(this, {
+        x: 400,
+        y: 300,
+        radius: 100,
+        // dir: '8dir',
+        // forceMin: 16,
+        // fixed: true,
+        // enable: true
+    });
+
+    cursors = joystick.createCursorKeys();
+
 
      //  The score
      scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFFF' });
 
-     socket.on("majScore", (score) => {
+     socket.on("majScore", (newScore) => {
                 //  Add and update the score
-        score += 10;
+        score = newScore;
         scoreText.setText('Score: ' + score);
      });
 
-     socket.on("majGameOver", () => gameOver = true);
+     socket.on("majGameOver", () => gameOver = true);  
+
 
 }
 
+
+
+
+
+var movementX ;
+var movementY;
+
 function update ()
 {
-    var movementX = null;
-    var movementY= null;
+  
+    var leftKeyDown = cursors.left.isDown;
+    var rightKeyDown = cursors.right.isDown;
+    var upKeyDown = cursors.up.isDown;
     
     if (gameOver)
     {
         return;
     }
+
+  
+
+    if (upKeyDown)
+    {
+        movementY = "up";
+    }
+    else {
+        movementY = "none";
+    }
+
+
+    if (leftKeyDown)
+    {
+        movementX = "left";
+
+    }
+    else if (rightKeyDown)
+    { 
+        movementX = "right";
+
+    }
+    else if(movementX === "turn"){
+       return;
+    }
+    else{
+        movementX = "turn";
+    }
+
+    console.log("update mouvement")
+    socket.emit('playerMovement', { x: movementX, y: movementY});
+    
+
+
+
+    /*
+    if (cursors.up.isDown)
+    {
+        movementY = "up";
+    }
+    else movementY = "none";
 
     if (cursors.left.isDown)
     {
@@ -112,24 +165,16 @@ function update ()
 
     }
     else if (cursors.right.isDown)
-    {
+    { 
         movementX = "right";
 
     }
-    else
-    {
+    else{
         movementX = "turn";
+    }*/
 
-    }
-
-    if (cursors.up.isDown)
-    {
-        movementY = "up";
-    }
-
-    console.log("update mouvement")
-    socket.emit('playerMovement', { x: movementX, y: movementY});
-    
+    //console.log("update mouvement")
+    //socket.emit('playerMovement', { x: movementX, y: movementY}); 
 
 }
 
