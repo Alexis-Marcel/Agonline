@@ -29,12 +29,13 @@ class survival extends Game {
     }
     removeSocket(socket) {
         super.removeSocket(socket);
-        io.emit('disconnectJoueur', socket.id);
+        this.socketCreateur.emit('disconnectJoueur', socket.id);
         console.log('user disconnected');
     }
 
     startGame(){
-
+        
+        super.startGame();
         io.to(this.codeRoom).emit("start");
     }
 
@@ -56,10 +57,14 @@ class survival extends Game {
             if(!user.gameOver){
                 nbJoueurEnVie++;
             }
+            if(nbJoueurEnVie >2){
+                return;
+            }
         });
 
         if(nbJoueurEnVie <2){
             console.log("fin de jeu");
+            this.socketCreateur.emit("endGame");
         }
     }
 

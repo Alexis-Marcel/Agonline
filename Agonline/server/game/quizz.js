@@ -29,8 +29,6 @@ class Quizz extends Game {
 
         this.typeQuestion = type;
 
-        this.start = false;
-
         this.timerStoper = undefined;
         this.questCourante = 0;
         this.affichageEvent = 0;
@@ -56,7 +54,8 @@ class Quizz extends Game {
 
     startGame() {
 
-        this.start = true;
+        super.startGame();
+        
         this.tabQuestion = [];
 
 

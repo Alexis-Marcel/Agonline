@@ -12,6 +12,8 @@ class Game {
         this.socketCreateur = socketCreateur;
         this.users = [];
 
+        this.start = false;
+
         socketCreateur.join(this.codeRoom);
         socketCreateur.on("creatorMessage", (text) => this.creatorMessage(text));
         socketCreateur.emit("codeRoom", this.codeRoom);
@@ -19,6 +21,12 @@ class Game {
 
 
     }
+
+    startGame(){
+        this.start = true;
+    }
+
+
 
     addUser(socket,name){
         socket.join(this.codeRoom);

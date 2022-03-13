@@ -43,6 +43,8 @@ socket.on("codeRoom", (code) => {
     socket.on("start", () => {
       $("#game").removeClass("d-none");
       $("#waitMessage").addClass("d-none");
+      $("#start-button").off("click");
+      $("#start-button").addClass("d-none");
     });
 
     socket.emit("userNumber", codeRoom);
@@ -97,6 +99,16 @@ function create() {
 
     socket.on('playerMoved', (playerInfo) => movePlayer(self, playerInfo));
 
+    socket.on('disconnectJoueur', function (playerId) {
+        this.players.forEach((player) => {
+            if (playerId === otherPlayer.playerId) {
+                player.destroy();
+            }
+        });
+    });
+
+    socket.on("endGame", () => this.physics.pause());
+
 
     //  Our player animations, turning, walking left and walking right.
     this.anims.create({
@@ -138,6 +150,8 @@ function create() {
 
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
+
+
 
 
 }
