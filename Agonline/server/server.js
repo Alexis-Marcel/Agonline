@@ -15,6 +15,7 @@ const { checkValidName} = require("./users.js");
 const { rooms, checkValidRoom, getRoomByCode, getNumberUsersByCode, enterInARoom } = require("./rooms.js");
 const { Quizz } = require("./game/quizz.js");
 const {projectx} = require("./game/projectx");
+const {survival} = require("./game/survival");
 require("./spam.js");
 
 
@@ -24,7 +25,7 @@ io.on("connection", (socket) => {
     /**
      * envoie du nombre de participant dans la room
      */
-    socket.on("userNumber", (room) => socket.emit("userNumber", getNumberUsersByRoom(room)));
+    socket.on("userNumber", (room) => socket.emit("userNumber", getNumberUsersByCode(room)));
 
     /**
      * création d'un quizz
@@ -38,6 +39,14 @@ io.on("connection", (socket) => {
     socket.on("creationProjectX", () => {
         rooms.push(new projectx(socket));
     });
+
+    /**
+     * création d'un jeu sruvival
+     */
+     socket.on("survivalGame", (jeu) => {
+        rooms.push(new survival(socket,jeu));
+    });
+
     /**
      * connexion du joueur sur la page gameRoom.html
      */

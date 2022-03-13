@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
+    <title>Agonline Connexion</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="../stylesheet/main.css">
+    <link rel="stylesheet" href="../stylesheet/chat.css">
+
+</head>
+<body>
+<aside class="sidebar">
+
+    <div class="side-inner">
+        <div id="room">
+            <header id="roomHeader">
+                <p> Nombre d'utilisateurs connectés: <span id="userNumberChat">0</span></p>
+            </header>
+            <section id="messages"></section>
+            <form class="msg-inputarea" id="inputs">
+                <input type="submit" id="messageSubmit" value="Envoyer" />
+                <input type="text" id="messageInput" placeholder="Entrez votre message ..." />
+                </section>
+        </div>
+    </div>
+
+</aside>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Agonline</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="../index.html">Accueil</a>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav m-auto mb-2 mb-lg-0">
+                    <div class="nav-item input-group mb-3 mb-lg-0 me-lg-5">
+                        <span class="input-group-text">Nombre de joueurs connectés</span>
+                        <input id="nombreJoueur" type="text" class="form-control" readonly style="background-color: #fafafa;" >
+                    </div>
+                    <div class="nav-item input-group ms-lg-5">
+                        <span class="input-group-text">Code du Jeu</span>
+                        <input  id="codeRoom" type="text" class="form-control" readonly style="background-color: #fafafa;" >
+                        <button class="btn btn-outline-secondary" type="button" id="copy" >Copier</button>
+                    </div>
+                </ul>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a href="#" class="nav-direction js-menu-toggle menu-toggle">
+                            <i id="icon-message" class="far fa-comment-alt text-secondary"></i>
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+</header>
+<div id='mygame'></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../scriptGlobal/chat.js"></script>
+<script type="module" src="script/master.js"></script>
+</body>
+</html>

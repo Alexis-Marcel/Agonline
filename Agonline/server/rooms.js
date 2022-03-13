@@ -18,7 +18,7 @@ function getRoomByCode(code) {
 function getNumberUsersByCode(code) {
     let room = getRoomByCode(code);
     if(room == undefined) return -1
-    else room.users.length;
+    else return room.users.length;
 }
 
 function getRoomByUserId(id) {
@@ -28,9 +28,9 @@ function getRoomByUserId(id) {
     })
 }
 
-function enterInARoom(socket,room,name){
+function enterInARoom(socket,code,name){
 
-    let room = getRoomByCode(room);
+    let room = getRoomByCode(code);
     if(room != undefined) room.addUser(socket,name);
 }
 
