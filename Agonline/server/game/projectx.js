@@ -1,14 +1,13 @@
-const {Game} = require("./game");
-const {io, botName} = require("../server");
-const {getUserById, removeUser} = require("../users");
-const { use } = require("express/lib/application");
+const {Game, baseRedirection} = require("./game");
+const {io} = require("../server");
+const {getUserById} = require("../users");
 const { rgbToHex} = require("../color.js");
+
 class projectx extends Game {
 
     constructor(socketCreateur) {
         super(socketCreateur);
-        console.log('gamePlayer created');
-        this.destinationClient = "../ProjectX/gamePlayer.html?room=" + this.codeRoom;
+        this.destinationClient = baseRedirection + "ProjectX/gamePlayer.html?room=" + this.codeRoom;
     }
 
     addUser(socket, name) {

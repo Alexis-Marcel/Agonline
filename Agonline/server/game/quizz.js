@@ -1,6 +1,5 @@
-const { Game } = require("./game.js");
+const { Game, baseRedirection } = require("./game.js");
 const { io } = require("../server.js");
-const { getUserById } = require("../users.js");
 
 const mysql = require("mysql");
 
@@ -12,6 +11,7 @@ const db = mysql.createConnection({
     password: "",
     database: "agonline",
 });
+
 
 db.connect((err) => {
     if (err) {
@@ -25,7 +25,7 @@ class Quizz extends Game {
     constructor(socketCreateur,type) {
         super(socketCreateur);
 
-        this.destinationClient = "../Quizz/quizzPlayer.html?room=" + this.codeRoom;
+        this.destinationClient = baseRedirection + "Quizz/quizzPlayer.html?room=" + this.codeRoom;
 
         this.typeQuestion = type;
 

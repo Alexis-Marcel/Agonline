@@ -44,7 +44,6 @@ io.on("connection", (socket) => {
      */
      socket.on("survivalGame", (jeu) => {
         rooms.push(new survival(socket,jeu));
-        console.log(rooms.length);
     });
 
     /**
