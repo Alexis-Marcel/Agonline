@@ -38,4 +38,10 @@ function getRoomBySocketCreateur(s) {
     return rooms.find((room) => room.socketCreateur.id === s.id);
 }
 
-module.exports = { rooms,getRoomByUserId, checkValidRoom, getRoomByCode, getRoomBySocketCreateur, getNumberUsersByCode, enterInARoom };
+
+function removeRoom(room) {
+
+    rooms.splice(rooms.indexOf(room),1);
+}
+
+module.exports = { rooms,getRoomByUserId, checkValidRoom, getRoomByCode, getRoomBySocketCreateur, getNumberUsersByCode, enterInARoom, removeRoom };

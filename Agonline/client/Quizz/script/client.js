@@ -50,6 +50,9 @@ socket.on("login", () => {
      */
     socket.on("majScore", (score) => $("#score").text(score));
 
+    socket.on("getOut",(destination) => window.location.href = destination);
+
+
     /**
      * envoie de message dans le chate
      */
@@ -64,6 +67,7 @@ socket.on("login", () => {
      * initialisation du bouton de déconnexion
      */
     $("#exit").on("click", logout);
+
     socket.on("serverMessage", displayMessage);
 
     /**
@@ -109,10 +113,6 @@ function getScore(end) {
       $("#waitQuestion").removeClass("d-none");
     }
 
-}
-
-function logout() {
-    window.location.href = "index.html";
 }
 
 

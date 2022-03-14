@@ -58,6 +58,8 @@ const socket = io();
         
     });
 
+    socket.on("getOut",(destination) => window.location.href = destination);
+
  });
 
 var cursors;

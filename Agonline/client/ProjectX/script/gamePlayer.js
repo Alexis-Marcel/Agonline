@@ -44,6 +44,8 @@ var playerInfo
   * connexion  aprouvée
   */
  socket.on("login", () => {
+     
+    socket.on("getOut",(destination) => window.location.href = destination);
     socket.on("setUp",(info) => {
        playerInfo = info;
        var gamePlayer = new Phaser.Game(config);

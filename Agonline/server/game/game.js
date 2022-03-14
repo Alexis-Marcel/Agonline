@@ -1,7 +1,7 @@
 const { io, botName } = require("../server.js");
 const { getRandomColor } = require("../color.js");
 const { removeUser, getUserById} = require("../users.js");
-
+const {removeRoom } = require("../rooms.js");
 const CreatorName = "MASTER";
 
 // constructeur d'une gamePlayer
@@ -17,7 +17,11 @@ class Game {
         socketCreateur.join(this.codeRoom);
         socketCreateur.on("creatorMessage", (text) => this.creatorMessage(text));
         socketCreateur.emit("codeRoom", this.codeRoom);
-        socketCreateur.on("disconnect", () => socketCreateur.leave(this.codeRoom));
+        socketCreateur.on("disconnect", () => {
+            socketCreateur.leave(this.codeRoom);
+            io.to(this.codeRoom).emit("getOut", "../Global/joinRoom.html?alert=closed");
+            removeRoom(this);
+        });
 
 
     }
@@ -64,6 +68,8 @@ class Game {
         removeUser(this.users,user);
         let nbJoueur = this.users.length;
         io.to(this.codeRoom).emit("userNumber", nbJoueur);
+
+        return user;
     }
 
 

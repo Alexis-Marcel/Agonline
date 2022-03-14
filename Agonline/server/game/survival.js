@@ -10,6 +10,7 @@ class survival extends Game {
         super(socketCreateur);
         console.log('survival created');
         this.destinationClient = "../Survival/gamePlayer.html?room=" + this.codeRoom;
+
         this.socketCreateur.on("score", (playerId, score) => this.majScore(playerId,score));
         this.socketCreateur.on("gameOver", (playerId) => this.majGameOver(playerId));
 
@@ -21,6 +22,7 @@ class survival extends Game {
         const user = super.addUser(socket, name);
         user.score = 0;
         user.gameOver = false;
+        this.nbJoueurEnVie++;
         console.log('a player connected');
 
         socket.on('playerMovement',mouvementData => this.socketCreateur.emit('playerMoved',{playerId : user.socket.id, x: mouvementData.x, y: mouvementData.y}));
@@ -28,14 +30,27 @@ class survival extends Game {
         
     }
     removeSocket(socket) {
-        super.removeSocket(socket);
+        const user = super.removeSocket(socket);
         this.socketCreateur.emit('disconnectJoueur', socket.id);
-        console.log('user disconnected');
+
+        if(!user.gameOver){
+            this.nbJoueurEnVie--;
+            this.jeuEstFini();
+        }
     }
+
 
     startGame(){
         
         super.startGame();
+        this.nbJoueurEnVie = 0;
+
+        this.users.forEach(user => {
+            user.score = 0;
+            user.gameOver = false;
+            user.socket.emit("majScore", user.score)
+        });
+
         io.to(this.codeRoom).emit("start");
     }
 
@@ -49,20 +64,18 @@ class survival extends Game {
     majGameOver(playerId){
         let user = getUserById(this.users,playerId);
         user.gameOver = true;
+        this.nbJoueurEnVie--;
 
         user.socket.emit("majGameOver");
 
-        let nbJoueurEnVie=0;
-        this.users.forEach((user) => {
-            if(!user.gameOver){
-                nbJoueurEnVie++;
-            }
-            if(nbJoueurEnVie >2){
-                return;
-            }
-        });
+        this.jeuEstFini();
 
-        if(nbJoueurEnVie <2){
+        
+    }
+
+    jeuEstFini(){
+
+        if(this.nbJoueurEnVie <2){
             console.log("fin de jeu");
             this.socketCreateur.emit("endGame");
         }

@@ -99,12 +99,11 @@ function create() {
 
     socket.on('playerMoved', (playerInfo) => movePlayer(self, playerInfo));
 
-    socket.on('disconnectJoueur', function (playerId) {
-        this.players.forEach((player) => {
-            if (playerId === otherPlayer.playerId) {
-                player.destroy();
-            }
-        });
+    socket.on('disconnectJoueur', (playerId) => {
+
+        let player = self.players.find((player) => (playerId === player.id));
+        player.destroy();
+        self.players.splice(self.players.indexOf(player),1);
     });
 
     socket.on("endGame", () => this.physics.pause());
