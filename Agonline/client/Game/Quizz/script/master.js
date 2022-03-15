@@ -171,13 +171,6 @@ function copy() {
 
 $("#copy").on("click", copy);
 
-function creerQRC() {
-  let url = window.location.origin + "/Global/joinGame.html?room=" + codeRoom;
-  let qrc = "https://chart.googleapis.com/chart?cht=qr&chl=" + encodeURIComponent(url) + "&chs=200x200&choe=UTF-8&chld=L|0";
-  $("#img-qrcode").attr("src", qrc);
-  console.log(url);
-}
-
 
 
 

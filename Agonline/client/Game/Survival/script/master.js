@@ -25,25 +25,16 @@ var config = {
 const socket = io();
 const gameName = "survivalGame";
 
-const codeRoom = initMaster(socket,init,gameName);
+const codeRoom = initMaster(socket, init, gameName);
 
 function init() {
 
-    var game = new Phaser.Game(config);
-
-    socket.on("start", () => {
-        $("#game").removeClass("d-none");
-        $("#waitMessage").addClass("d-none");
-        $("#start-button").off("click");
-        $("#start-button").addClass("d-none");
-    });
+    new Phaser.Game(config); // lancement de phaser;
 }
-
 
 var stars;
 var bombs;
 var platforms;
-
 
 function preload() {
     this.load.image('sky', 'assets/sky.png');
@@ -74,6 +65,11 @@ function create() {
     platforms.create(50, 250, 'ground');
     platforms.create(750, 220, 'ground');
 
+    socket.on("start", () => {
+        this.physics.pause();
+        displayStart();
+    });
+
 
     socket.on('newPlayer', (playerInfo) => createPlayer(self, playerInfo));
 
@@ -86,7 +82,29 @@ function create() {
         self.players.splice(self.players.indexOf(player), 1);
     });
 
-    socket.on("endGame", () => this.physics.pause());
+    socket.on("endRound", () => this.physics.pause());
+
+    socket.on("newRound", () => {
+
+        this.players.forEach((player) => {
+            player.gameOver = false;
+        });
+        
+        $("#game").removeClass("d-none");
+        $("#score").addClass("d-none");
+
+        $("#affichageScore div").remove();
+
+    });
+
+    socket.on("startRound", () => {
+        this.physics.resume();
+    });
+
+    /**
+    * afficher le score global
+    */
+    socket.on("affichageScore", (score) => displayScore(score));
 
 
     //  Our player animations, turning, walking left and walking right.
@@ -129,9 +147,6 @@ function create() {
 
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
-
-
-
 
 }
 
@@ -192,6 +207,11 @@ function movePlayer(self, playerInfo) {
 }
 
 function collectStar(player, star) {
+
+    if(player.gameOver){
+        return;
+    }
+
     star.disableBody(true, true);
 
     socket.emit("score", player.id, 10);
@@ -216,6 +236,10 @@ function collectStar(player, star) {
 
 function hitBomb(player, bomb) {
 
+    if(player.gameOver){
+        return;
+    }
+
     player.gameOver = true;
 
     player.setTint(0xff0000);
@@ -225,6 +249,55 @@ function hitBomb(player, bomb) {
 
     socket.emit("gameOver", player.id);
 }
+
+function displayScore(score) {
+
+    /**
+     * trie du score selon le score décroissant
+     */
+    score.sort(function (a, b) {
+        return b.score - a.score;
+    })
+
+    let compte = 1;
+    score.forEach(joueur => {
+        const num = $("<div></div>").text(compte);
+        const name = $("<div></div>").text(joueur.name);
+        let point;
+        if (joueur.score <= 1) {
+            point = $("<div></div>")
+                .text(joueur.score + " point");
+        }
+        else {
+            point = $("<div></div>")
+                .text(joueur.score + " points");
+        }
+        const scoreJoueur = $("<div></div>")
+            .append(num)
+            .append(name)
+            .append(point)
+            .addClass("d-flex")
+            .addClass("justify-content-between")
+            .addClass("align-items-center");
+        $("#affichageScore")
+            .append(scoreJoueur)
+            .scrollTop(function () {
+                return this.scrollHeight;
+            });
+
+        compte++;
+    });
+    $("#game").addClass("d-none");
+    $("#score").removeClass("d-none");
+
+}
+
+function displayStart() {
+    $("#waitMessage").addClass("d-none");
+    $("#start-button").off("click");
+    $("#start-button").addClass("d-none");
+}
+
 
 function copy() {
 

@@ -28,7 +28,9 @@ const socket = io();
 
 initClient(socket,start,init);
 
-function init(){}
+function init(){
+
+}
 function start() {
 
     $("#waitMessage").addClass("d-none");
@@ -69,7 +71,20 @@ function create() {
         scoreText.setText('Score: ' + score);
     });
 
-    socket.on("majGameOver", () => gameOver = true);
+    socket.on("majGameOver", (statut) => gameOver = statut);
+
+    /**
+      * affichage score
+      */
+     socket.on("score", () => getScore());
+
+
+     socket.on("newRound", () => {
+        
+        $("#game").removeClass("d-none");
+        $("#waitRound").addClass("d-none");
+
+    });
 
 
 }
@@ -146,5 +161,13 @@ function update() {
     //console.log("update mouvement")
     //socket.emit('playerMovement', { x: movementX, y: movementY}); 
 
+}
+
+function getScore(end) {
+
+    $("#game").addClass("d-none");
+
+    $("#waitRound").removeClass("d-none");
+    
 }
 
