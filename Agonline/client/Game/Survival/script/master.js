@@ -88,6 +88,8 @@ function create() {
 
         this.players.forEach((player) => {
             player.gameOver = false;
+            player.clearTint();
+            player.setPosition(100,450);
         });
         
         $("#game").removeClass("d-none");
@@ -231,6 +233,7 @@ function collectStar(player, star) {
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
 
+        
     }
 }
 

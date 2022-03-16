@@ -3,7 +3,7 @@ const { io } = require("../server");
 const { getUserById } = require("../users");
 
 
-const nbRound = 3;
+const nbRound = 5;
 
 class survival extends Game {
 
@@ -112,7 +112,7 @@ class survival extends Game {
     roundEstFini() {
 
         if (this.nbJoueurEnVie == 1) {
-            console.log(this.codeRoom+" : fin du round " + nbRound-this.nbRoundRestant);
+            console.log(this.codeRoom+" : fin du round " + (nbRound-this.nbRoundRestant));
             this.socketCreateur.emit("endRound");
             this.timer(3,this.getScore);
         }
