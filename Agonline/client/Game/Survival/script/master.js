@@ -95,12 +95,19 @@ function create() {
         $("#game").removeClass("d-none");
         $("#score").addClass("d-none");
 
-        $("#affichageScore div").remove();
-
     });
+
 
     socket.on("startRound", () => {
         this.physics.resume();
+    });
+
+    socket.on("endGame", () =>{
+
+        $("#start-button").on("click", function () {
+            socket.emit("start");
+        });
+        $("#start-button").removeClass("d-none");
     });
 
     /**
@@ -254,6 +261,8 @@ function hitBomb(player, bomb) {
 }
 
 function displayScore(score) {
+
+    $("#affichageScore div").remove();//suppresion de l'ancien score
 
     /**
      * trie du score selon le score décroissant

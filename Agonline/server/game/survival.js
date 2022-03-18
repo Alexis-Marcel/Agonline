@@ -3,7 +3,7 @@ const { io } = require("../server");
 const { getUserById } = require("../users");
 
 
-const nbRound = 5;
+const nbRound = 2;
 
 class survival extends Game {
 
@@ -15,8 +15,6 @@ class survival extends Game {
         this.socketCreateur.on("gameOver", (playerId) => this.majGameOver(playerId));
 
         this.socketCreateur.on("start", () => this.startGame());
-
-        this.nbRoundRestant = nbRound;
 
     }
 
@@ -37,7 +35,7 @@ class survival extends Game {
         // si le joueur quitte la partie en cours et en vie
         if (this.start && !user.gameOver) {
             this.nbJoueurEnVie--;
-            this.jeuEstFini();
+            this.roundEstFini();
         }
     }
 
@@ -48,11 +46,15 @@ class survival extends Game {
 
         super.startGame();
 
+        this.nbRoundRestant = nbRound;
+
         //initialisation du score et du statut de vie de chaque joueur
         this.users.forEach(user => {
             user.score = 0;
             user.socket.emit("majScore", user.score)
         });
+
+
 
         //envoie de l'instruction de départ à tous les joueurs + master
         io.to(this.codeRoom).emit("start");
@@ -63,6 +65,8 @@ class survival extends Game {
 
     newRound(){
 
+        console.log(this.codeRoom + " début du round " + (nbRound-this.nbRoundRestant)+ "/" + nbRound);
+
         this.nbJoueurEnVie = this.users.length;// initialisation du nombre de joueur en vie
 
         //initialisation du score et du statut de vie de chaque joueur
@@ -71,12 +75,9 @@ class survival extends Game {
             user.socket.emit("majGameOver",false); // envoie du statut
         });
 
-        this.nbJoueurEnVie = this.users.length;
 
         io.to(this.codeRoom).emit("newRound");
         this.timer(3,this.startRound);
-
-        this.nbRoundRestant--;
     }
 
     /**
@@ -111,8 +112,10 @@ class survival extends Game {
      */
     roundEstFini() {
 
-        if (this.nbJoueurEnVie == 1) {
-            console.log(this.codeRoom+" : fin du round " + (nbRound-this.nbRoundRestant));
+        this.nbRoundRestant--;
+
+        if (this.nbJoueurEnVie <= 1) {
+            console.log(this.codeRoom+" : fin du round " + (nbRound-this.nbRoundRestant)+ "/" + nbRound);
             this.socketCreateur.emit("endRound");
             this.timer(3,this.getScore);
         }
@@ -160,6 +163,7 @@ class survival extends Game {
         }
         else {
             game.start = false;
+            io.to(game.codeRoom).emit("endGame");
             console.log(game.codeRoom+" : fin du jeu.")
         }
     }

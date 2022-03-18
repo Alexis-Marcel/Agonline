@@ -29,13 +29,14 @@ const socket = io();
 initClient(socket,start,init);
 
 function init(){
-
+    var gamePlayer = new Phaser.Game(config);
 }
+
+
 function start() {
 
     $("#waitMessage").addClass("d-none");
     $("#game").removeClass("d-none");
-    var gamePlayer = new Phaser.Game(config);
 }
 
 var cursors;
@@ -86,6 +87,11 @@ function create() {
 
     });
 
+    socket.on("endGame", () => {
+        $("#waitMessage").removeClass("d-none");
+        $("#waitRound").addClass("d-none");
+    });
+
 
 }
 
@@ -98,6 +104,7 @@ var movementY;
 
 function update() {
 
+
     var leftKeyDown = cursors.left.isDown;
     var rightKeyDown = cursors.right.isDown;
     var upKeyDown = cursors.up.isDown;
@@ -105,8 +112,6 @@ function update() {
     if (gameOver) {
         return;
     }
-
-
 
     if (upKeyDown) {
         movementY = "up";
