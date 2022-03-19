@@ -86,11 +86,18 @@ function create() {
 
     socket.on("newRound", () => {
 
+        
+        bombs.clear(true,true); // suppresion de toute les bombes
+
         this.players.forEach((player) => {
+
+
             player.gameOver = false;
-            player.clearTint();
-            player.setPosition(100,450);
+            player.clearTint(); // réinitialisation de la couleur
+
+            player.setPosition(spawnAleatoireX(this),spawnAleatoireY(this));
         });
+
         
         $("#game").removeClass("d-none");
         $("#score").addClass("d-none");
@@ -139,11 +146,18 @@ function create() {
 
 
     //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-    stars = this.physics.add.group({
+    /*stars = this.physics.add.group({
         key: 'star',
-        repeat: 1,
-        setXY: { x: 300, y: 0, stepX: 70 }
-    });
+        repeat: 3,
+        setXY: { x: spawnAleatoireX(this), y: spawnAleatoireY(this) }
+    });*/
+
+    stars = this.physics.add.group();
+
+    let nbEtoile = Phaser.Math.Between(1,4);
+    for (let index = 0; index < nbEtoile; index++) {
+        stars.create(spawnAleatoireX(this), spawnAleatoireY(this),'star');
+    }
 
     stars.children.iterate(function (child) {
 
@@ -152,12 +166,23 @@ function create() {
 
     });
 
+    
+
     bombs = this.physics.add.group();
 
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
 
 }
+
+function spawnAleatoireX(self){
+    return Phaser.Math.Between(0, self.game.config.width);
+}
+
+function spawnAleatoireY(self){
+    return Phaser.Math.Between(0, 512);
+}
+
 
 
 function createPlayer(self, playerInfo) {
