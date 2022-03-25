@@ -13,7 +13,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: true
         }
     },
     scene: {
@@ -35,6 +35,7 @@ function init() {
 var stars;
 var bombs;
 var platforms;
+var players;
 
 function preload() {
     this.load.image('sky', 'assets/sky.png');
@@ -48,7 +49,7 @@ function create() {
 
     let self = this;
 
-    this.players = [];
+    players = this.physics.add.group(); 
 
     //  A simple background for our game
     this.add.image(400, 300, 'sky');
@@ -77,20 +78,20 @@ function create() {
 
     socket.on('disconnectJoueur', (playerId) => {
 
-        let player = self.players.find((player) => (playerId === player.id));
+        let player = players.find((player) => (playerId === player.id));
         player.destroy();
-        self.players.splice(self.players.indexOf(player), 1);
+        players.splice(players.indexOf(player), 1);
     });
 
     socket.on("endRound", () => this.physics.pause());
 
     socket.on("newRound", () => {
 
-        
+        spawnEtoile(this);
+
         bombs.clear(true,true); // suppresion de toute les bombes
 
-        this.players.forEach((player) => {
-
+        players.getChildren().forEach((player) => {
 
             player.gameOver = false;
             player.clearTint(); // réinitialisation de la couleur
@@ -145,28 +146,7 @@ function create() {
     });
 
 
-    //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-    /*stars = this.physics.add.group({
-        key: 'star',
-        repeat: 3,
-        setXY: { x: spawnAleatoireX(this), y: spawnAleatoireY(this) }
-    });*/
-
-    stars = this.physics.add.group();
-
-    let nbEtoile = Phaser.Math.Between(1,4);
-    for (let index = 0; index < nbEtoile; index++) {
-        stars.create(spawnAleatoireX(this), spawnAleatoireY(this),'star');
-    }
-
-    stars.children.iterate(function (child) {
-
-        //  Give each star a slightly different bounce
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
-    });
-
-    
+    stars = this.physics.add.group();    
 
     bombs = this.physics.add.group();
 
@@ -175,20 +155,36 @@ function create() {
 
 }
 
-function spawnAleatoireX(self){
-    return Phaser.Math.Between(0, self.game.config.width);
+function spawnAleatoireX(){
+    return Phaser.Math.Between(0, 790);
 }
 
-function spawnAleatoireY(self){
+function spawnAleatoireY(){
     return Phaser.Math.Between(0, 512);
 }
 
 
+function spawnEtoile(){
 
+    stars.clear(true,true); // suppresion de toute les bombes
+
+    let nbEtoile = Phaser.Math.Between(1,4);
+        for (let index = 0; index < nbEtoile; index++) {
+            stars.create(spawnAleatoireX(), spawnAleatoireY(),'star');
+        }
+
+        stars.children.iterate(function (child) {
+
+            //  Give each star a slightly different bounce
+            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    
+        });
+}
 function createPlayer(self, playerInfo) {
 
     // The player and its settings
-    var player = self.physics.add.sprite(100, 450, 'dude');
+    let player = players.create(100, 450, 'dude');
+    
 
     player.gameOver = false;
 
@@ -199,20 +195,23 @@ function createPlayer(self, playerInfo) {
     //  Collide the player 
     self.physics.add.collider(player, platforms);
 
+    self.physics.add.collider(player,players)
+
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     self.physics.add.overlap(player, stars, collectStar, null, self);
 
     self.physics.add.collider(player, bombs, hitBomb, null, self);
 
+
     player.id = playerInfo.playerId;
 
-    self.players.push(player);
+    
 
 }
 
 function movePlayer(self, playerInfo) {
 
-    var player = self.players.find((p) => p.id === playerInfo.playerId);
+    var player = players.getChildren().find((p) => p.id === playerInfo.playerId);
 
     if (player.gameOver) {
         return;
@@ -240,6 +239,7 @@ function movePlayer(self, playerInfo) {
 
 }
 
+
 function collectStar(player, star) {
 
     if(player.gameOver){
@@ -252,15 +252,10 @@ function collectStar(player, star) {
 
     if (stars.countActive(true) === 0) {
         //  A new batch of stars to collect
-        stars.children.iterate(function (child) {
+        
+        spawnEtoile();
 
-            child.enableBody(true, child.x, 0, true, true);
-
-        });
-
-        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-        var bomb = bombs.create(x, 16, 'bomb');
+        var bomb = bombs.create(spawnAleatoireX(), 16, 'bomb');
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
