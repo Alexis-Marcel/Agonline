@@ -1,6 +1,7 @@
 const { Game, baseRedirection } = require("./game");
 const { io } = require("../server");
 const { getUserById } = require("../users");
+const {rgbToHex} = require("../color.js")
 
 
 const nbRound = 2;
@@ -16,6 +17,8 @@ class survival extends Game {
 
         this.socketCreateur.on("start", () => this.startGame());
 
+        this.socketCreateur.on("readyForANewRound", () => this.encoreUnRound());
+
     }
 
     addUser(socket, name) {
@@ -24,7 +27,7 @@ class survival extends Game {
 
         // mouvement du joueur
         socket.on('playerMovement', mouvementData => this.socketCreateur.emit('playerMoved', { playerId: user.socket.id, x: mouvementData.x, y: mouvementData.y }));
-        this.socketCreateur.emit('newPlayer', { playerId: user.socket.id });// création du joueur
+        this.socketCreateur.emit('newPlayer', { playerId: user.socket.id , playerColor: "0x"+user.color});// création du joueur
 
     }
 
@@ -75,9 +78,7 @@ class survival extends Game {
             user.socket.emit("majGameOver",false); // envoie du statut
         });
 
-
         io.to(this.codeRoom).emit("newRound");
-        this.timer(3,this.startRound);
     }
 
     /**
@@ -103,8 +104,6 @@ class survival extends Game {
         user.socket.emit("majGameOver",true); // envoie du statut
 
         this.roundEstFini();
-
-
     }
 
     /**
@@ -116,8 +115,7 @@ class survival extends Game {
 
         if (this.nbJoueurEnVie <= 1) {
             console.log(this.codeRoom+" : fin du round " + (nbRound-this.nbRoundRestant)+ "/" + nbRound);
-            this.socketCreateur.emit("endRound");
-            this.timer(3,this.getScore);
+            this.getScore();
         }
     }
 
@@ -128,52 +126,25 @@ class survival extends Game {
         return tab;
     }
 
-    timer(time,callback) {
 
-        let timeleft = time;
+    getScore() {
 
-        let timerStoper = setInterval(() => {
-
-            if (timeleft <= 0) { 
-                
-                clearInterval(timerStoper);
-                callback(this);
-            }
-
-            timeleft -= 1;
-        }, 1000);
+        this.socketCreateur.emit("affichageScore", this.getTabScore());
+        io.to(this.codeRoom).emit("score");
 
     }
 
-    /**
-     * FONCTION CALLBACK TIMER
-     */
-    getScore(game) {
-
-        game.socketCreateur.emit("affichageScore", game.getTabScore());
-        io.to(game.codeRoom).emit("score");
-
-        game.timer(3,game.encoreUnRound);
-
-    }
-
-    encoreUnRound(game){
-        if(game.nbRoundRestant>0){
-            game.newRound();
+    encoreUnRound(){
+        if(this.nbRoundRestant>0){
+            this.newRound();
         }
         else {
-            game.start = false;
-            io.to(game.codeRoom).emit("endGame");
-            console.log(game.codeRoom+" : fin du jeu.")
+            this.start = false;
+            io.to(this.codeRoom).emit("endGame");
+            console.log(this.codeRoom+" : fin du jeu.")
         }
     }
-    startRound(game){
-        game.socketCreateur.emit("startRound");
-    }
 
-     /**
-     * FONCTION CALLBACK TIMER
-     */
 
     
 

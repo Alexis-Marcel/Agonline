@@ -12,8 +12,12 @@ function getRandomColor() {
     return `rgb(${colors.join(",")})`;
 }
 
+function getRandomColorHexa(){
+    return (Math.floor(Math.random()*0xFFFFFF)).toString(16);
+}
 
 function rgbToHex(r, g, b) {
     return "0x" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
-module.exports = { getRandomColor , rgbToHex };
+
+module.exports = { getRandomColor , rgbToHex, getRandomColorHexa};
