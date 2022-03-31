@@ -4,7 +4,10 @@ const { getUserById } = require("../users");
 const {rgbToHex} = require("../color.js")
 
 
-const nbRound = 2;
+const nbRound = 3;
+const scoreCollectStar = 10;
+const scoreSurviveTime = 1;
+const scoreWin = 30;
 
 class survival extends Game {
 
@@ -12,8 +15,8 @@ class survival extends Game {
         super(socketCreateur);
         this.destinationClient = baseRedirection + "Survival/gamePlayer.html?room=" + this.codeRoom;
 
-        this.socketCreateur.on("score", (playerId, score) => this.majScore(playerId, score));
-        this.socketCreateur.on("gameOver", (playerId) => this.majGameOver(playerId));
+        this.socketCreateur.on("collectStar", (playerId) => this.majScore(getUserById(this.users, playerId), scoreCollectStar));
+        this.socketCreateur.on("gameOver", (playerId,surviveTime) => this.majGameOver(playerId,surviveTime));
 
         this.socketCreateur.on("start", () => this.startGame());
 
@@ -46,6 +49,11 @@ class survival extends Game {
      * lancement du jeu
      */
     startGame() {
+
+        if(this.users.length<2){
+            this.socketCreateur.emit("alert", `Le nombre de joueurs est insuffisant pour lancer la partie.`);
+            return;
+        }
 
         super.startGame();
 
@@ -84,8 +92,8 @@ class survival extends Game {
     /**
      * mise à jour du score quand le joueur ramasse une étoile
      */
-    majScore(playerId, score) {
-        let user = getUserById(this.users, playerId);
+    majScore(user, score) {
+        console.log(user.name +" : score + "+score);
         user.score += score;
         user.socket.emit("majScore", user.score);
 
@@ -94,8 +102,9 @@ class survival extends Game {
     /**
      * mise à jour du statut de vie d'un joueur quand il est touché par une bombe
      */
-    majGameOver(playerId) {
+    majGameOver(playerId,surviveTime) {
         let user = getUserById(this.users, playerId);
+        this.majScore(user,surviveTime*scoreSurviveTime);
         user.gameOver = true;
         this.nbJoueurEnVie--;
 
@@ -103,20 +112,30 @@ class survival extends Game {
 
         user.socket.emit("majGameOver",true); // envoie du statut
 
-        this.roundEstFini();
+        this.roundEstFini(surviveTime);
     }
 
     /**
      * Test de la fin du jeu si il n'y a plus qu'un joueur en vie
      */
-    roundEstFini() {
-
-        this.nbRoundRestant--;
+    roundEstFini(surviveTime) {
 
         if (this.nbJoueurEnVie <= 1) {
+
+            this.nbRoundRestant--;
             console.log(this.codeRoom+" : fin du round " + (nbRound-this.nbRoundRestant)+ "/" + nbRound);
-            this.getScore();
+            const winnerName = this.getWinner(surviveTime);
+            this.getScore(winnerName);
         }
+    }
+
+    getWinner(surviveTime){
+        const winner = this.users.find( user => !user.gameOver);
+        console.log("Winner : "+ winner.name);
+        this.majScore(winner,scoreWin);
+        this.majScore(winner,surviveTime*scoreSurviveTime);
+
+        return winner.name;
     }
 
 
@@ -127,9 +146,9 @@ class survival extends Game {
     }
 
 
-    getScore() {
+    getScore(winnerName) {
 
-        this.socketCreateur.emit("affichageScore", this.getTabScore());
+        this.socketCreateur.emit("affichageScore", this.getTabScore(),winnerName);
         io.to(this.codeRoom).emit("score");
 
     }

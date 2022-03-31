@@ -27,7 +27,9 @@ const gameName = "survivalGame";
 const codeRoom = initMaster(socket, init, gameName);
 const SECONDE = 1000;
 const TimeRoundStart = 3;
+const TimeScoreDisplay = 5;
 const StartWord = "Survive !"
+
 
 function init() {
 
@@ -39,7 +41,10 @@ var bombs;
 var platforms;
 var players;
 var startCountText;
-let timer;
+var winnerRoundText;
+let startTimer;
+let surviveTimer;
+let surviveTimeCount;
 
 function preload() {
     this.load.image('sky', 'assets/sky.png');
@@ -68,13 +73,10 @@ function create() {
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
 
-
     createStartRoundText(self);
+    createWinnerRoundText(self);
 
-    socket.on("start", () => {
-        this.physics.pause();
-        displayStart();
-    });
+    socket.on("start", () => displayStart());
 
     socket.on('newPlayer', (playerInfo) => createPlayer(self, playerInfo));
 
@@ -85,25 +87,31 @@ function create() {
     socket.on("newRound", () => startRoundSetUp(self));
 
     socket.on("endGame", () =>{
-
         $("#start-button").on("click", function () {
             socket.emit("start");
         });
         $("#start-button").removeClass("d-none");
     });
 
-    /**
-    * afficher le score global
-    */
-    socket.on("affichageScore", (score) => endRound(score,self));
+    //afficher le score global
+    socket.on("affichageScore", (score,winnerName) => endRound(score,winnerName,self));
 
+    this.physics.pause();
 
+    surviveTimer = this.time.addEvent({
+        delay: 100,    
+        callback: () => surviveTimeCount++, 
+        loop: true
+    });
+    surviveTimer.paused = true;
 
 }
 
 function startRoundSetUp(self){
 
     spawnEtoile();
+
+    surviveTimeCount = 0;
 
     bombs.clear(true,true); // suppresion de toute les bombes
 
@@ -120,7 +128,7 @@ function startRoundSetUp(self){
     $("#score").addClass("d-none");
 
     
-    timer = self.time.addEvent({
+    startTimer = self.time.addEvent({
         delay: 1*SECONDE,                
         callback: startRoundText,
         callbackScope: self,
@@ -130,10 +138,11 @@ function startRoundSetUp(self){
 
 function startRoundText(){
     startCountText.visible = true;
-    let timesLeft = timer.getRepeatCount()-1;
+    let timesLeft = startTimer.getRepeatCount()-1;
     if(timesLeft == 0){
         startCountText.setText(StartWord);
         this.physics.resume();
+        surviveTimer.paused = false;
     }
     else if (timesLeft == -1){
         startCountText.visible = false;
@@ -153,6 +162,17 @@ function createStartRoundText(self){
     startCountText = self.add.text(screenCenterX, screenCenterY, '',style).setOrigin(0.5);
     startCountText.visible = false;
 }
+
+function createWinnerRoundText(self){
+
+    var style = { font: "bold 60px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+
+    const screenCenterX = self.cameras.main.worldView.x + self.cameras.main.width / 2;
+    const screenCenterY = self.cameras.main.worldView.y + self.cameras.main.height / 2;
+    winnerRoundText = self.add.text(screenCenterX, screenCenterY, '',style).setOrigin(0.5);
+    winnerRoundText.visible = false;
+}
+
 
 function spawnAleatoireX(){
     return Phaser.Math.Between(0, 790);
@@ -271,7 +291,7 @@ function collectStar(player, star) {
 
     star.disableBody(true, true);
 
-    socket.emit("score", player.id, 10);
+    socket.emit("collectStar", player.id);
 
     if (stars.countActive(true) === 0) {
         //  A new batch of stars to collect
@@ -300,16 +320,21 @@ function hitBomb(player, bomb) {
     player.setVelocityX(0);
     player.anims.play('turn');
 
-    socket.emit("gameOver", player.id);
+    console.log(surviveTimeCount/10);
+    socket.emit("gameOver", player.id,surviveTimeCount/10);
 }
 
-function endRound(score,self){
+function endRound(score,winnerName,self){
+    surviveTimer.paused = true;
+    winnerRoundText.setText(winnerName + " a gagné ce round !");
+    winnerRoundText.visible = true;
     self.physics.pause();
     self.time.delayedCall(3*SECONDE, displayScore, [score], self); 
 }
 
 function displayScore(score) {
 
+    winnerRoundText.visible = false;
     $("#affichageScore div").remove();//suppresion de l'ancien score
 
     /**
@@ -350,7 +375,7 @@ function displayScore(score) {
     $("#game").addClass("d-none");
     $("#score").removeClass("d-none");
 
-    this.time.delayedCall(3*SECONDE, readyForANewRound); 
+    this.time.delayedCall(TimeScoreDisplay*SECONDE, readyForANewRound); 
 
 }
 

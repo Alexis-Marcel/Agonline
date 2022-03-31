@@ -95,6 +95,10 @@ function initMaster(socket, init, nomGame, type = null) {
             $("#userNumberChat").text(number);
         });
 
+        socket.on("alert",(message) => {
+            alert(message);
+        });
+
         
     });
 
