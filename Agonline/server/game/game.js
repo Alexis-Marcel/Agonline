@@ -24,9 +24,12 @@ class Game {
     }
 
     closeGame() {
+        this.start = false;
         this.socketCreateur.leave(this.codeRoom);
         io.to(this.codeRoom).emit("getOut", "../../RoomConnexion/joinRoom.html?alert=closed");
         removeRoom(this);
+        console.log(this.codeRoom + " has been closed");
+        
     }
 
     startGame() {

@@ -35,6 +35,7 @@ class survival extends Game {
     }
 
     removeSocket(socket) {
+    
         const user = super.removeSocket(socket);
         this.socketCreateur.emit('disconnectJoueur', socket.id);
 
