@@ -118,7 +118,7 @@ function startRoundSetUp(self){
     players.getChildren().forEach((player) => {
 
         player.gameOver = false;
-        player.tint = player.color;
+        player.setTint(player.color);
 
         player.setPosition(spawnAleatoireX(),spawnAleatoireY());
     });
@@ -161,6 +161,7 @@ function createStartRoundText(self){
     const screenCenterY = self.cameras.main.worldView.y + self.cameras.main.height / 2;
     startCountText = self.add.text(screenCenterX, screenCenterY, '',style).setOrigin(0.5);
     startCountText.visible = false;
+    startCountText.setDepth(1);
 }
 
 function createWinnerRoundText(self){
@@ -171,6 +172,7 @@ function createWinnerRoundText(self){
     const screenCenterY = self.cameras.main.worldView.y + self.cameras.main.height / 2;
     winnerRoundText = self.add.text(screenCenterX, screenCenterY, '',style).setOrigin(0.5);
     winnerRoundText.visible = false;
+    winnerRoundText.setDepth(1);
 }
 
 

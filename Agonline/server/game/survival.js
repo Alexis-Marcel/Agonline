@@ -31,6 +31,8 @@ class survival extends Game {
         // mouvement du joueur
         socket.on('playerMovement', mouvementData => this.socketCreateur.emit('playerMoved', { playerId: user.socket.id, x: mouvementData.x, y: mouvementData.y }));
         this.socketCreateur.emit('newPlayer', { playerId: user.socket.id , playerColor: "0x"+user.color});// création du joueur
+        socket.on('newPlayer', () => socket.emit('newPlayer', { playerColor: "0x"+user.color})); // création du joueur "fictif" coté client
+
 
     }
 
