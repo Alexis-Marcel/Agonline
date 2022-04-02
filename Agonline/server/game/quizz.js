@@ -54,9 +54,7 @@ class Quizz extends Game {
 
 
     startGame() {
-
-        console.log("blop :");
-        console.log(this.waitingQueue);
+        
         super.startGame();
         
         this.tabQuestion = [];
