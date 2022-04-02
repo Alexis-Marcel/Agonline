@@ -11,7 +11,7 @@ const botName = "ChatBot";
 module.exports = { io, botName };
 
 const { checkValidName} = require("./users.js");
-const { rooms, checkValidRoom, getRoomByCode, getNumberUsersByCode, enterInARoom } = require("./rooms.js");
+const { rooms, checkValidRoom, getRoomByCode, getNumberUsersByCode, enterInARoom, checkRoomStatus } = require("./rooms.js");
 const { Quizz } = require("./game/quizz.js");
 const {projectx} = require("./game/projectx");
 const {survival} = require("./game/survival");
@@ -57,10 +57,15 @@ io.on("connection", (socket) => {
     socket.on("checkLog", (name,room) => {
         let roomCurrent = getRoomByCode(room);
         if(roomCurrent != undefined){ 
-            if (checkValidName(name, socket, roomCurrent.users,roomCurrent.start)) {
-                destination = roomCurrent.destinationClient;
-                socket.emit("checkLog", destination);
+            if (checkValidName(name, socket, roomCurrent.users,roomCurrent.waitingQueue)) {
+
+                if(checkRoomStatus(roomCurrent,name,socket)){
+
+                    destination = roomCurrent.destinationClient;
+                    socket.emit("checkLog", destination);
+                }
             }
+            
         }
     });
 

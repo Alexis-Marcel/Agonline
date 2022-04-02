@@ -12,6 +12,7 @@ class Game {
         this.codeRoom = codeAleatoire();
         this.socketCreateur = socketCreateur;
         this.users = [];
+        this.waitingQueue = [];
 
         this.start = false;
 
@@ -35,6 +36,17 @@ class Game {
     startGame() {
         console.log(this.codeRoom + " start")
         this.start = true;
+    }
+
+    endGame(){
+        console.log(this.codeRoom + " end")
+        this.start = false;
+        destination = this.destinationClient;
+        this.waitingQueue.forEach( user => {
+            
+            user.socket.emit("checkLog", destination);
+        });
+
     }
 
     addUser(socket, name) {
@@ -61,8 +73,6 @@ class Game {
 
         return user;
     }
-
-
 
     removeSocket(socket) {
 

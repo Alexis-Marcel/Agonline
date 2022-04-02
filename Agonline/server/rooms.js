@@ -1,3 +1,5 @@
+const { removeUser } = require("./users.js");
+const { io } = require("./server.js");
 const rooms = [];
 
 function checkValidRoom(roomTry, socket) {
@@ -44,4 +46,25 @@ function removeRoom(room) {
     rooms.splice(rooms.indexOf(room),1);
 }
 
-module.exports = { rooms,getRoomByUserId, checkValidRoom, getRoomByCode, getRoomBySocketCreateur, getNumberUsersByCode, enterInARoom, removeRoom };
+function checkRoomStatus(room,name,socket){
+    if(room.start){
+
+        socket.join(this.codeRoom+ "WAIT");
+        
+        const user = {socket : socket, name : name}
+        room.waitingQueue.push(user);
+        io.to(this.codeRoom+"WAIT").emit("waitingNumber", room.waitingQueue.length);
+
+        socket.on("disconnect", () => {
+            removeUser(room.waitingQueue, socket);
+            socket.leave(this.codeRoom+"WAIT");
+        });
+        let message = "La partie a déjà commencé. Vous avez été placé en file d'attente !";
+        socket.emit("waitingQueue", {txt : message, place : (room.waitingQueue.indexOf(user)+1),total : room.waitingQueue.length});
+    }
+    else {
+        return true;
+    }
+}
+
+module.exports = { rooms,getRoomByUserId, checkValidRoom, getRoomByCode, getRoomBySocketCreateur, getNumberUsersByCode, enterInARoom, removeRoom, checkRoomStatus };

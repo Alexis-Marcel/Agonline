@@ -55,6 +55,8 @@ class Quizz extends Game {
 
     startGame() {
 
+        console.log("blop :");
+        console.log(this.waitingQueue);
         super.startGame();
         
         this.tabQuestion = [];
@@ -142,7 +144,7 @@ class Quizz extends Game {
 
             this.socketCreateur.emit("affichageScore", this.getTabScore(), true);
             io.to(this.codeRoom).emit("score", true);
-            this.start=false;
+            this.endGame()
         }
         else {
             this.timer(5);

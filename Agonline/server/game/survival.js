@@ -161,10 +161,15 @@ class survival extends Game {
             this.newRound();
         }
         else {
-            this.start = false;
-            io.to(this.codeRoom).emit("endGame");
-            console.log(this.codeRoom+" : fin du jeu.")
+            this.endGame()
+        
         }
+    }
+
+    endGame(){
+        super.endGame();
+        io.to(this.codeRoom).emit("endGame");
+        console.log(this.codeRoom+" : fin du jeu.")
     }
 
 

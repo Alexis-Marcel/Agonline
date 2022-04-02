@@ -1,5 +1,5 @@
 
-function checkValidName(name, socket, users,start) {
+function checkValidName(name, socket, users,waitingQueueUsers) {
     
     if (name === "") {
         socket.emit("alert", "Choissisez un nom pour pouvoir jouer.");
@@ -7,10 +7,8 @@ function checkValidName(name, socket, users,start) {
         socket.emit("alert", "Votre nom est trop long.");
     } else if (!name.match(/^[A-Za-z0-9_-]+$/g)) {
         socket.emit("alert", "Seul les lettres, nombres et caractères _ - sont autorisés.");
-    } else if (users.some((user) => user.name === name)) {
+    } else if (users.some((user) => user.name === name) || waitingQueueUsers.some((user) => user.name === name)) {
         socket.emit("alert", `Le nom ${name} est déjà utilisé.`);
-    } else if(start){
-        socket.emit("alert", `La partie a déjà commencé.`);
     }else{ 
         return true;
     }
