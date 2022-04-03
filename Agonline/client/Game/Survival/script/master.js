@@ -13,7 +13,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: true
+            debug: false
         }
     },
     scene: {
@@ -78,6 +78,8 @@ function create() {
 
     socket.on("start", () => displayStart());
 
+    socket.on("nbRound", (nbRound) => $("#nbRound").text(nbRound));
+
     socket.on('newPlayer', (playerInfo) => createPlayer(self, playerInfo));
 
     socket.on('playerMoved', (playerInfo) => movePlayer(playerInfo));
@@ -91,6 +93,17 @@ function create() {
             socket.emit("start");
         });
         $("#start-button").removeClass("d-none");
+
+        if( $("#score").hasClass("d-none")){
+
+            console.log("stop urgent");
+            this.physics.pause();
+            surviveTimer.paused = true;
+
+            $("#waitMessage").removeClass("d-none");
+            $("#game").addClass("d-none");
+
+        }
     });
 
     //afficher le score global
@@ -99,7 +112,7 @@ function create() {
     this.physics.pause();
 
     surviveTimer = this.time.addEvent({
-        delay: 100,    
+        delay: SECONDE,    
         callback: () => surviveTimeCount++, 
         loop: true
     });
@@ -249,9 +262,8 @@ function createPlayer(self,playerInfo) {
 
 function disconnectPlayer(playerId){
 
-    let player = players.find((player) => (playerId === player.id));
-        player.destroy();
-        players.splice(players.indexOf(player), 1);
+    let player = players.getChildren().find((player) => (playerId === player.id));
+    player.destroy();
 }
 
 function movePlayer(playerInfo) {
@@ -322,8 +334,7 @@ function hitBomb(player, bomb) {
     player.setVelocityX(0);
     player.anims.play('turn');
 
-    console.log(surviveTimeCount/10);
-    socket.emit("gameOver", player.id,surviveTimeCount/10);
+    socket.emit("gameOver", player.id,surviveTimeCount);
 }
 
 function endRound(score,winnerName,self){
@@ -412,6 +423,7 @@ function getAnimation(self){
 
 function displayStart() {
     $("#waitMessage").addClass("d-none");
+    $("#numberQuestion").removeClass("d-none");
     $("#start-button").off("click");
     $("#start-button").addClass("d-none");
 }

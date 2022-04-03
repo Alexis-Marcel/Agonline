@@ -41,11 +41,14 @@ class survival extends Game {
         const user = super.removeSocket(socket);
         this.socketCreateur.emit('disconnectJoueur', socket.id);
 
-        // si le joueur quitte la partie en cours et en vie
-        if (this.start && !user.gameOver) {
+        if(this.users.length<2){
+            this.endGame();
+        }
+        else if (this.start && !user.gameOver) { // si le joueur quitte la partie en cours et en vie
             this.nbJoueurEnVie--;
             this.roundEstFini();
         }
+        
     }
 
     /**
@@ -60,9 +63,9 @@ class survival extends Game {
 
         super.startGame();
 
-        this.nbRoundRestant = nbRound;
+        this.nbRoundCourant = 0;
 
-        //initialisation du score et du statut de vie de chaque joueur
+        //initialisation du score  de chaque joueur
         this.users.forEach(user => {
             user.score = 0;
             user.socket.emit("majScore", user.score)
@@ -79,11 +82,16 @@ class survival extends Game {
 
     newRound(){
 
-        console.log(this.codeRoom + " début du round " + (nbRound-this.nbRoundRestant)+ "/" + nbRound);
+        this.nbRoundCourant++;
+
+        console.log(this.codeRoom + " début du round " + (this.nbRoundCourant)+ "/" + nbRound);
+
+        this.socketCreateur.emit("nbRound", (this.nbRoundCourant)+ "/" + nbRound);
+
 
         this.nbJoueurEnVie = this.users.length;// initialisation du nombre de joueur en vie
 
-        //initialisation du score et du statut de vie de chaque joueur
+        //initialisation du statut de vie de chaque joueur
         this.users.forEach(user => {
             user.gameOver = false;
             user.socket.emit("majGameOver",false); // envoie du statut
@@ -125,8 +133,8 @@ class survival extends Game {
 
         if (this.nbJoueurEnVie <= 1) {
 
-            this.nbRoundRestant--;
-            console.log(this.codeRoom+" : fin du round " + (nbRound-this.nbRoundRestant)+ "/" + nbRound);
+            console.log(this.codeRoom+" : fin du round " + (this.nbRoundCourant)+ "/" + nbRound);
+            
             const winnerName = this.getWinner(surviveTime);
             this.getScore(winnerName);
         }
@@ -157,7 +165,7 @@ class survival extends Game {
     }
 
     encoreUnRound(){
-        if(this.nbRoundRestant>0){
+        if(this.nbRoundCourant != nbRound){
             this.newRound();
         }
         else {
@@ -171,10 +179,6 @@ class survival extends Game {
         io.to(this.codeRoom).emit("endGame");
         console.log(this.codeRoom+" : fin du jeu.")
     }
-
-
-    
-
 
 
 

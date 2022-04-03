@@ -18,6 +18,7 @@ socket.emit("userNumber", room);
 $(".name-inputarea").on("submit", function( event ) {
     event.preventDefault();
     nomUtilisateur = $("#nameInput").val();
+    nomUtilisateur = nomUtilisateur.replace(/ /g, ""); 
     socket.emit("checkLog", nomUtilisateur,room);
     
 });

@@ -108,6 +108,7 @@ function create() {
     socket.on("endGame", () => {
         $("#waitMessage").removeClass("d-none");
         $("#waitRound").addClass("d-none");
+        $("#game").addClass("d-none");
     });
 
 
