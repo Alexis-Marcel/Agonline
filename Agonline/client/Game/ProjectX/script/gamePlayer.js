@@ -1,6 +1,11 @@
+//import VirtualJoystickPlugin from '/phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
+import { initClient } from "../../scriptGlobal/global.js";
 const config = {
     type: Phaser.AUTO,
-    scale: { mode: Phaser.Scale.FIT,
+    transparent: true,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        parent: 'game',
         autoCenter: Phaser.Scale.CENTER_BOTH},
     physics: {
         default: 'arcade',
@@ -18,39 +23,27 @@ const config = {
 
 const socket = io();
 
-/**
- * récupération des paramètres permettant de créer l'utilisateur
- */
- const nom = localStorage.getItem('name');
+initClient(socket,start,init);
 
- const params = new URLSearchParams(window.location.search)
- const room = params.get('room');
-/**
-  * connexion de l'utilisateur à la salle
-  */
- socket.emit("login", nom, room);
- 
- /**
-  *initialisation du nombre de joueurs présent dans la salle
-  */
- socket.on("userNumber", (number) => {
-     $("#userNumberChat").text(number);
- });
- socket.emit("userNumber", room);
- 
-let playerInfo
- /**
-  * connexion  aprouvée
-  */
- socket.on("login", () => {
-     
-    socket.on("getOut",(destination) => window.location.href = destination);
-    socket.on("setUp",(info) => {
-       playerInfo = info;
-       var gamePlayer = new Phaser.Game(config);
+function init(){
+    var gamePlayer = new Phaser.Game(config);
+    socket.emit("newPlayer");
+    socket.on("newPlayer", (info) =>playerInfo = info );
+}
 
-    });
- });
+function start() {
+    $("#waitMessage").addClass("d-none");
+    $("#game").removeClass("d-none");
+}
+
+
+ 
+var playerInfo;
+socket.on("addPlayer",(p)=> {
+        playerInfo = p;
+    }
+)
+
 
 function preload() {
     this.load.image('ship', '../../assets/images/enemyBlack5.png')
@@ -59,12 +52,27 @@ function preload() {
 
 function create() {
 
-    socket.on("taille", (w,h) => {
-        this.physics.world.setBounds(0, 0, w, h);
-    });
+
     self = this;
     this.cursors = this.input.keyboard.createCursorKeys();
     addPlayer(self,playerInfo);
+
+    socket.on("taille", (w,h) => {
+        this.physics.world.setBounds(0, 0, w, h);
+    });
+    //socket.on("score", () => getScore());
+    socket.on("newRound", () => {
+
+        $("#game").removeClass("d-none");
+        $("#waitRound").addClass("d-none");
+
+    });
+
+    socket.on("endGame", () => {
+        $("#waitMessage").removeClass("d-none");
+        $("#waitRound").addClass("d-none");
+        $("#game").addClass("d-none");
+    });
 
 }
 
@@ -73,6 +81,7 @@ function addPlayer(self,playerInfo) {
     self.NewShip = self.physics.add.image(self.canvas.width/2,self.canvas.height/2, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40)
     self.NewShip.setTint(playerInfo.color);
     self.ship.setCollideWorldBounds(true);
+    self.ship.setBounce(2);
     self.ship.setDrag(100);
     self.ship.setAngularDrag(100);
     self.ship.setMaxVelocity(200);
@@ -97,8 +106,6 @@ function update() {
             this.ship.setAcceleration(0);
         }
 
-        //this.physics.world.wrap(this.ship, 5);
-        // emit player movement
         let x = this.ship.x;
         let y = this.ship.y;
         let r = this.ship.rotation;
