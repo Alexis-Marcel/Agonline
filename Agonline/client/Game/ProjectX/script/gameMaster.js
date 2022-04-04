@@ -24,6 +24,10 @@ var config = {
 const gameName = "creationProjectX";
 const socket = io();
 const codeRoom = initMaster(socket, init, gameName);
+var spriteBounds;
+var group;
+var text;
+var apparition = 1;
 
 function init() {
 
@@ -33,15 +37,49 @@ function init() {
 function preload() {
     this.load.image('ship', '../../assets/images/spaceShips_001.png');
     this.load.image('otherPlayer', '../../assets/images/enemyBlack5.png');
+    //this.load.image('asteroide', '../../assets/images/asteroide.png');
+}
+
+function release (){
+    for (var i = 0; i < apparition; i++)
+    {
+
+        var block = group.create(this.sys.game.canvas.width, this.sys.game.canvas.height, 'ship');
+        var block2= group.create(0, this.sys.game.canvas.height, 'ship');
+        var block3 = group.create(0, 0, 'ship');
+        var block4 = group.create(this.sys.game.canvas.width, 0, 'ship');
+        block.setVelocity(Phaser.Math.Between(-200, 0), Phaser.Math.Between(-200, 0));
+        block.setMaxVelocity(300);
+        block.setBlendMode(1);
+        block2.setVelocity(Phaser.Math.Between(0, 200), Phaser.Math.Between(-200, 0));
+        block2.setMaxVelocity(300);
+        block2.setBlendMode(1);
+        block3.setVelocity(Phaser.Math.Between(0, 200), Phaser.Math.Between(0, 200));
+        block3.setMaxVelocity(300);
+        block3.setBlendMode(1);
+        block4.setVelocity(Phaser.Math.Between(0, -200), Phaser.Math.Between(0, 200));
+        block4.setMaxVelocity(300);
+        block4.setBlendMode(1);
+    }
+    apparition+=1;
+
+    text.setText('Total: ' + group.getLength());
 }
 
 function create() {
     this.gameWidth = this.sys.game.canvas.width
     this.gameHeight = this.sys.game.canvas.height
 
+    spriteBounds = Phaser.Geom.Rectangle.Inflate(Phaser.Geom.Rectangle.Clone(this.physics.world.bounds), -10, -200);
+    spriteBounds.y += 100;
 
     let self = this;
 
+    group = this.physics.add.group();
+    group.runChildUpdate = false;
+
+    this.time.addEvent({ delay: 3000, callback: release, callbackScope: this, repeat: 30});
+    text = this.add.text(10, 10, 'Total: 0', { font: '16px Courier', fill: '#ffffff' });
 
     socket.on("userNumber", (number) => {
         $("#nombreJoueur").val(number);
