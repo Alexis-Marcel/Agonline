@@ -25,8 +25,7 @@ const socket = io();
 
  const params = new URLSearchParams(window.location.search)
  const room = params.get('room');
- 
- /**
+/**
   * connexion de l'utilisateur à la salle
   */
  socket.emit("login", nom, room);
@@ -39,7 +38,7 @@ const socket = io();
  });
  socket.emit("userNumber", room);
  
-var playerInfo
+let playerInfo
  /**
   * connexion  aprouvée
   */
@@ -59,6 +58,10 @@ function preload() {
 }
 
 function create() {
+
+    socket.on("taille", (w,h) => {
+        this.physics.world.setBounds(0, 0, w, h);
+    });
     self = this;
     this.cursors = this.input.keyboard.createCursorKeys();
     addPlayer(self,playerInfo);
@@ -69,6 +72,7 @@ function addPlayer(self,playerInfo) {
     self.ship = self.physics.add.image(playerInfo.x,playerInfo.y).setOrigin(0.5, 0.5).setDisplaySize(53, 40);
     self.NewShip = self.physics.add.image(self.canvas.width/2,self.canvas.height/2, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40)
     self.NewShip.setTint(playerInfo.color);
+    self.ship.setCollideWorldBounds(true);
     self.ship.setDrag(100);
     self.ship.setAngularDrag(100);
     self.ship.setMaxVelocity(200);

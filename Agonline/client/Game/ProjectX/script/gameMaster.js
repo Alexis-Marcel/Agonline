@@ -1,23 +1,13 @@
+import { initMaster } from "../../scriptGlobal/global.js";
 
 var config = {
     type: Phaser.AUTO,
-    parent: 'mygame',
-    width: 800,
-    height: 600,
+    parent: 'game',
     scale: { mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        min: {
-            width: 800,
-            height: 600
-        },
-        // Or set minimum size like these
-        // mixWidth: 800,
-        // mixHeight: 600,
-
-        // Maximum size
         max: {
-            width: 1600,
-            height: 900
+            width: 1000,
+            height: 600
         }},
     physics: {
         default: 'arcade',
@@ -31,49 +21,65 @@ var config = {
         create: create,
     }
 };
-var game = new Phaser.Game(config);
+const gameName = "creationProjectX";
+const socket = io();
+const codeRoom = initMaster(socket, init, gameName);
+
+function init() {
+
+    new Phaser.Game(config); // lancement de phaser;
+}
+
 function preload() {
     this.load.image('ship', '../../assets/images/spaceShips_001.png');
     this.load.image('otherPlayer', '../../assets/images/enemyBlack5.png');
 }
 
 function create() {
+    this.gameWidth = this.sys.game.canvas.width
+    this.gameHeight = this.sys.game.canvas.height
+
 
     let self = this;
-    this.socket = io();
-    let codeRoom;
 
-    this.socket.on("codeRoom", (code) => {
-        codeRoom = code;
-        $("#codeRoom").val(codeRoom);
-        this.socket.emit("userNumber", codeRoom);
-    });
 
-    this.socket.on("userNumber", (number) => {
+    socket.on("userNumber", (number) => {
         $("#nombreJoueur").val(number);
         $("#userNumberChat").text(number);
     });
 
-    this.socket.emit("creationProjectX");
-
     this.otherPlayers = this.physics.add.group();
 
-    /* useless
-    this.socket.on('currentPlayers', function () {
-        Object.keys(players).forEach(function (id) {
-            if (players[id].playerId === self.socket.id) {
-                addPlayer(self, players[id]);
-            } else {
-                addOtherPlayers(self, players[id]);
-            }
+    socket.on("start", () => displayStart());
+
+    socket.on("nbRound", (nbRound) => $("#nbRound").text(nbRound));
+
+    socket.on('newPlayer', (playerInfo) => addOtherPlayers(self, playerInfo));
+
+    socket.on("newRound", () => startRoundSetUp(self));
+
+    socket.on("endGame", () =>{
+        $("#start-button").on("click", function () {
+            socket.emit("start");
         });
-        console.log("ça marche");
+        $("#start-button").removeClass("d-none");
+
+        if( $("#score").hasClass("d-none")){
+
+            console.log("stop urgent");
+            this.physics.pause();
+            surviveTimer.paused = true;
+
+            $("#waitMessage").removeClass("d-none");
+            $("#game").addClass("d-none");
+
+        }
     });
-    */
 
-    this.socket.on('newPlayer',  (playerInfo) => addOtherPlayers(self, playerInfo));
+    //afficher le score global
+    socket.on("affichageScore", (score,winnerName) => endRound(score,winnerName,self));
 
-    this.socket.on('disconnectJoueur', function (playerId) {
+    socket.on('disconnectJoueur', function (playerId) {
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
             if (playerId === otherPlayer.playerId) {
                 otherPlayer.destroy();
@@ -81,7 +87,7 @@ function create() {
         });
     });
 
-    this.socket.on('playerMoved', function (playerInfo) {
+    socket.on('playerMoved', function (playerInfo) {
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
             if (playerInfo.playerId === otherPlayer.playerId) {
                 otherPlayer.setRotation(playerInfo.rotation);
@@ -91,12 +97,33 @@ function create() {
     });
 }
 
+function startRoundSetUp(self){
+
+
+    $("#game").removeClass("d-none");
+    $("#score").addClass("d-none");
+
+}
+
+
+
+
 function addOtherPlayers(self, playerInfo) {
     const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'otherPlayer').setOrigin(0.5, 0.5).setDisplaySize(53, 40);
     otherPlayer.tint = playerInfo.color;
     otherPlayer.playerId = playerInfo.playerId;
     self.otherPlayers.add(otherPlayer);
+
 }
+
+function displayStart() {
+    $("#waitMessage").addClass("d-none");
+    $("#numberQuestion").removeClass("d-none");
+    $("#start-button").off("click");
+    $("#start-button").addClass("d-none");
+    socket.emit("taille",(this.gameWidth , this.gameHeight ));
+}
+
 
 function copy() {
 
