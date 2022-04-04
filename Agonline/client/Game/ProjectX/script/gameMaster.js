@@ -37,17 +37,17 @@ function init() {
 function preload() {
     this.load.image('ship', '../../assets/images/spaceShips_001.png');
     this.load.image('otherPlayer', '../../assets/images/enemyBlack5.png');
-    //this.load.image('asteroide', '../../assets/images/asteroide.png');
+    this.load.image('asteroide', '../../assets/images/asteroide.png');
 }
 
 function release (){
     for (var i = 0; i < apparition; i++)
     {
 
-        var block = group.create(this.sys.game.canvas.width, this.sys.game.canvas.height, 'ship');
-        var block2= group.create(0, this.sys.game.canvas.height, 'ship');
-        var block3 = group.create(0, 0, 'ship');
-        var block4 = group.create(this.sys.game.canvas.width, 0, 'ship');
+        var block = group.create(this.sys.game.canvas.width, this.sys.game.canvas.height, 'asteroide');
+        var block2= group.create(0, this.sys.game.canvas.height, 'asteroide');
+        var block3 = group.create(0, 0, 'asteroide');
+        var block4 = group.create(this.sys.game.canvas.width, 0, 'asteroide');
         block.setVelocity(Phaser.Math.Between(-200, 0), Phaser.Math.Between(-200, 0));
         block.setMaxVelocity(300);
         block.setBlendMode(1);
