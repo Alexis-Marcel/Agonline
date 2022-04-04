@@ -37,7 +37,7 @@ function start() {
 }
 
 
- 
+var gameOver;
 var playerInfo;
 socket.on("addPlayer",(p)=> {
         playerInfo = p;
@@ -68,11 +68,7 @@ function create() {
 
     });
 
-    socket.on("endGame", () => {
-        $("#waitMessage").removeClass("d-none");
-        $("#waitRound").addClass("d-none");
-        $("#game").addClass("d-none");
-    });
+
 
 }
 
@@ -88,6 +84,9 @@ function addPlayer(self,playerInfo) {
 }
 
 function update() {
+    if(gameOver){
+        return;
+    }
     if (this.ship) {
         if (this.cursors.left.isDown) {
             this.ship.setAngularVelocity(-150);
@@ -110,7 +109,7 @@ function update() {
         let y = this.ship.y;
         let r = this.ship.rotation;
         if (this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y || r !== this.ship.oldPosition.rotation)) {
-            console.log("update mouvement")
+
             socket.emit('playerMovement', { x: this.ship.x, y: this.ship.y, rotation: this.ship.rotation });
         }
     // save old position data

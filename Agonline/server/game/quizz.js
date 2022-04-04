@@ -16,7 +16,7 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-         throw "CONNEXION A LA BASE IMPOSSIBLE\n\n" + err;
+         //throw "CONNEXION A LA BASE IMPOSSIBLE\n\n" + err;
      }
  });
 
