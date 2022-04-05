@@ -4,7 +4,7 @@ const params = new URLSearchParams(window.location.search)
 const out = params.get('alert');
 
 if(out != undefined){
-    putAlert("La room a été fermé !");
+    putAlert("La room a été fermée !");
 }
 
 let codeRoom;
