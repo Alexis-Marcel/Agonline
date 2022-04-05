@@ -36,9 +36,13 @@ let playerInfo;
 initClient(socket,start,init);
 
 function init(){
-    var gamePlayer = new Phaser.Game(config);
     socket.emit("newPlayer");
-    socket.on("newPlayer", (info) =>playerInfo = info );
+    socket.on("newPlayer", (info) =>{
+        playerInfo = info;
+        new Phaser.Game(config);
+    });
+    
+    
 }
 
 
