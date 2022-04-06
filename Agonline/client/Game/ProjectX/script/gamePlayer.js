@@ -1,24 +1,18 @@
-import VirtualJoystickPlugin from '/phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
+//import VirtualJoystickPlugin from '/phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 import { initClient } from "../../scriptGlobal/global.js";
-
-const width = window.innerWidth;
-const height = window.innerHeight*0.95;
-
 const config = {
     type: Phaser.AUTO,
     transparent: true,
     scale: {
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-        parent: game,
-    },
-    plugins: {
-        global: [{
-            key: 'rexVirtualJoystick',
-            plugin: VirtualJoystickPlugin,
-            start: true
-        },
-        ]
+        parent: 'game',
+        autoCenter: Phaser.Scale.CENTER_BOTH},
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: false,
+            gravity: { y: 0 }
+        }
     },
     scene: {
         preload: preload,
@@ -45,10 +39,6 @@ function start() {
 
 var gameOver;
 var playerInfo;
-var cursors;
-var scoreText;
-var player;
-
 socket.on("addPlayer",(p)=> {
         playerInfo = p;
     }
@@ -64,19 +54,7 @@ function create() {
 
 
     self = this;
-
-    var joystick = this.plugins.get('rexVirtualJoystick').add(this, {
-        x: width/2,
-        y: height*0.75,
-        radius: 100,
-        // dir: '8dir',
-        // forceMin: 16,
-        // fixed: true,
-        // enable: true
-    });
-
-    this.cursors = joystick.createCursorKeys();
-
+    this.cursors = this.input.keyboard.createCursorKeys();
     addPlayer(self,playerInfo);
 
     socket.on("taille", (w,h) => {
@@ -90,93 +68,55 @@ function create() {
 
     });
 
-    getAnimation(self);
+
 
 }
 
 function addPlayer(self,playerInfo) {
-    player = self.add.sprite(0, 0, 'ship');
-    console.log(player);
-    player.setScale(2);
-    player.setTint(playerInfo.color);
-    player.setPosition(width/2,height*0.25);
-
+    self.ship = self.physics.add.image(playerInfo.x,playerInfo.y).setOrigin(0.5, 0.5).setDisplaySize(53, 40);
+    self.NewShip = self.physics.add.image(self.canvas.width/2,self.canvas.height/2, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40)
+    self.NewShip.setTint(playerInfo.color);
+    self.ship.setCollideWorldBounds(true);
+    self.ship.setBounce(2);
+    self.ship.setDrag(100);
+    self.ship.setAngularDrag(100);
+    self.ship.setMaxVelocity(200);
 }
 
-var movementX;
-var movementY;
-
 function update() {
-
-    var leftKeyDown = this.cursors.left.isDown;
-    var rightKeyDown = this.cursors.right.isDown;
-    var upKeyDown = this.cursors.up.isDown;
-
     if(gameOver){
         return;
     }
-    if (upKeyDown) {
-        movementY = "up";
-    }
-    else {
-        movementY = "none";
-    }
+    if (this.ship) {
+        if (this.cursors.left.isDown) {
+            this.ship.setAngularVelocity(-150);
+            this.NewShip.setAngularVelocity(-150);
+        } else if (this.cursors.right.isDown) {
+            this.ship.setAngularVelocity(150);
+            this.NewShip.setAngularVelocity(150);
+        } else {
+            this.ship.setAngularVelocity(0);
+            this.NewShip.setAngularVelocity(0);
+        }
 
+        if (this.cursors.up.isDown) {
+            this.physics.velocityFromRotation(this.ship.rotation + 1.5, 100, this.ship.body.acceleration);
+        } else {
+            this.ship.setAcceleration(0);
+        }
 
-    if (leftKeyDown) {
-        movementX = "left";
-        player.anims.play('left', true);
+        let x = this.ship.x;
+        let y = this.ship.y;
+        let r = this.ship.rotation;
+        if (this.ship.oldPosition && (x !== this.ship.oldPosition.x || y !== this.ship.oldPosition.y || r !== this.ship.oldPosition.rotation)) {
 
-    }
-    else if (rightKeyDown) {
-        movementX = "right";
-        player.anims.play('right', true);
-
-    }
-    else if (movementX === "turn") {
-        return;
-    }
-    else {
-        movementX = "turn";
-        player.anims.play('turn');
-    }
-
-        let x = player.x;
-        let y = player.y;
-        let r = player.rotation;
-        if (player.oldPosition && (x !== player.oldPosition.x || y !== player.oldPosition.y || r !== player.oldPosition.rotation)) {
-            console.log("mouvement update");
-            socket.emit('playerMovement', { x: player.x, y: player.y, rotation: player.rotation });
+            socket.emit('playerMovement', { x: this.ship.x, y: this.ship.y, rotation: this.ship.rotation });
         }
     // save old position data
-        player.oldPosition = {
-            x: player.x,
-            y: player.y,
-            rotation: player.rotation
+        this.ship.oldPosition = {
+            x: this.ship.x,
+            y: this.ship.y,
+            rotation: this.ship.rotation
         };
-}
-
-function getAnimation(self){
-
-    //  Our player animations, turning, walking left and walking right.
-    self.anims.create({
-        key: 'left',
-        frames: self.anims.generateFrameNumbers('ship', { start: 0, end: 3 }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    self.anims.create({
-        key: 'turn',
-        frames: [{ key: 'ship', frame: 4 }],
-        frameRate: 20
-    });
-
-    self.anims.create({
-        key: 'right',
-        frames: self.anims.generateFrameNumbers('ship', { start: 5, end: 8 }),
-        frameRate: 10,
-        repeat: -1
-    });
-
+    }
 }
