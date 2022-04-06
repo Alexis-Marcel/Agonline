@@ -19,7 +19,7 @@ var config = {
     scene: {
         preload: preload,
         create: create,
-    }
+    },
 };
 const gameName = "creationProjectX";
 const socket = io();

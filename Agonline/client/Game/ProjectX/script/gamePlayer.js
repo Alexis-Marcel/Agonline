@@ -1,4 +1,4 @@
-//import VirtualJoystickPlugin from '/phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
+import VirtualJoystickPlugin from '/phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 import { initClient } from "../../scriptGlobal/global.js";
 const config = {
     type: Phaser.AUTO,
@@ -18,6 +18,14 @@ const config = {
         preload: preload,
         create: create,
         update: update
+    },
+    plugins: {
+        global: [{
+            key: 'rexVirtualJoystick',
+            plugin: VirtualJoystickPlugin,
+            start: true
+        },
+        ]
     }
 };
 
@@ -39,6 +47,8 @@ function start() {
 
 var gameOver;
 var playerInfo;
+var cursorJoystick;
+
 socket.on("addPlayer",(p)=> {
         playerInfo = p;
     }
@@ -56,7 +66,17 @@ function create() {
     self = this;
     this.cursors = this.input.keyboard.createCursorKeys();
     addPlayer(self,playerInfo);
+    var joystick = this.plugins.get('rexVirtualJoystick').add(this, {
+        x: this.canvas.width/2,
+        y: this.canvas.height/2,
+        radius: 100,
+        // dir: '8dir',
+        // forceMin: 16,
+        // fixed: true,
+        // enable: true
+    });
 
+    cursorJoystick = joystick.createCursorKeys();
     socket.on("taille", (w,h) => {
         this.physics.world.setBounds(0, 0, w, h);
     });
@@ -74,7 +94,7 @@ function create() {
 
 function addPlayer(self,playerInfo) {
     self.ship = self.physics.add.image(playerInfo.x,playerInfo.y).setOrigin(0.5, 0.5).setDisplaySize(53, 40);
-    self.NewShip = self.physics.add.image(self.canvas.width/2,self.canvas.height/2, 'ship').setOrigin(0.5, 0.5).setDisplaySize(53, 40)
+    self.NewShip = self.physics.add.image(self.canvas.width/2,self.canvas.height *0.25, 'ship').setOrigin(0.5, 0.5).setDisplaySize(100, 100);
     self.NewShip.setTint(playerInfo.color);
     self.ship.setCollideWorldBounds(true);
     self.ship.setBounce(2);
@@ -84,14 +104,17 @@ function addPlayer(self,playerInfo) {
 }
 
 function update() {
+    var leftKeyDown = cursorJoystick.left.isDown;
+    var rightKeyDown = cursorJoystick.right.isDown;
+    var upKeyDown = cursorJoystick.up.isDown;
     if(gameOver){
         return;
     }
     if (this.ship) {
-        if (this.cursors.left.isDown) {
+        if (this.cursors.left.isDown || leftKeyDown) {
             this.ship.setAngularVelocity(-150);
             this.NewShip.setAngularVelocity(-150);
-        } else if (this.cursors.right.isDown) {
+        } else if (this.cursors.right.isDown || rightKeyDown) {
             this.ship.setAngularVelocity(150);
             this.NewShip.setAngularVelocity(150);
         } else {
@@ -99,7 +122,7 @@ function update() {
             this.NewShip.setAngularVelocity(0);
         }
 
-        if (this.cursors.up.isDown) {
+        if (this.cursors.up.isDown || upKeyDown) {
             this.physics.velocityFromRotation(this.ship.rotation + 1.5, 100, this.ship.body.acceleration);
         } else {
             this.ship.setAcceleration(0);
