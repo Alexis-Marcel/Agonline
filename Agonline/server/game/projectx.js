@@ -18,9 +18,7 @@ class projectx extends Game {
         user.x = Math.floor(Math.random() * 700) + 50;
         user.y = Math.floor(Math.random() * 500) + 50;
         user.gameOver = false;
-
-        socket.emit("setUp", {x: user.x, y: user.y, rotation: user.rotation, color: "0x" + user.color});
-        socket.emit("addPlayer", {x: user.x, y: user.y, rotation: user.rotation, color: "0x" + user.color})
+        
         socket.on('playerMovement', mouvementData => this.playerMovement(user, mouvementData));
         this.socketCreateur.emit('newPlayer', {
             playerId: user.socket.id,
