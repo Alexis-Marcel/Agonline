@@ -3,7 +3,7 @@ Sujet 14 : Piccadilly Game
 
 Groupe : Alexis MARCEL, Lilian LEBLANC, Justine PRULIERE
 
-Ce projet a pour objectif de créer un site web interactive permettant de lancer un mini jeux sur un écran (écran principal) qui pourra être rejoins par n’importe qui via un code. Chaque personne rejoignant le mini jeux pourra interagir sur l’écran principal avec son écran.
+Ce projet a pour objectif de créer un site web interactif permettant de lancer un mini jeu sur un écran (écran principal) qui pourra être rejoint par n’importe qui via un code. Chaque personne rejoignant le mini jeu pourra interagir sur l’écran principal avec son écran.
 
 -----------------
                                                                                                                
