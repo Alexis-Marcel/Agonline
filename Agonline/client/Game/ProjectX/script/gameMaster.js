@@ -133,8 +133,6 @@ function create() {
 
 
 
-
-
 function hitAsteroide(p,a){
     if(p.gameOver){
         return;

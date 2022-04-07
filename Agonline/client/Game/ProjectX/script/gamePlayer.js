@@ -70,10 +70,8 @@ function create() {
         x: this.canvas.width/2,
         y: this.canvas.height/2,
         radius: 100,
-        // dir: '8dir',
-        // forceMin: 16,
-        // fixed: true,
-        // enable: true
+        base: this.add.circle(0, 0, 100, 0x888888),
+        thumb: this.add.circle(0, 0, 50, 0xcccccc),
     });
 
     cursorJoystick = joystick.createCursorKeys();
