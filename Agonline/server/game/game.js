@@ -1,5 +1,5 @@
 const { io, botName } = require("../server.js");
-const { getRandomColorHexa } = require("../color.js");
+const { getRandomColorHexa,getRandomColor, Colors } = require("../color.js");
 const { removeUser, getUserById } = require("../users.js");
 const { removeRoom } = require("../rooms.js");
 const CreatorName = "MASTER";
@@ -13,6 +13,7 @@ class Game {
         this.socketCreateur = socketCreateur;
         this.users = [];
         this.waitingQueue = [];
+        this.colors = Colors;
 
         this.start = false;
 
@@ -62,7 +63,8 @@ class Game {
         });
 
         //ajout du joueur dans la liste des joueurs de la partie
-        const user = { socket: socket, name: name, color: getRandomColorHexa() };
+        const user = { socket: socket, name: name, color: getRandomColor(this.colors) };
+        console.log(this.colors.length);
         this.users.push(user);
         let nbJoueur = this.users.length;
         io.to(this.codeRoom).emit("userNumber", nbJoueur);

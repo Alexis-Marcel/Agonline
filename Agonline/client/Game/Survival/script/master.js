@@ -227,6 +227,7 @@ function spawnEtoile(){
     
         });
 }
+
 function createPlayer(self,playerInfo) {
 
     // The player and its settings

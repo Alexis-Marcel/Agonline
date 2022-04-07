@@ -151,7 +151,6 @@ function update() {
         movementY = "none";
     }
 
-
     if (leftKeyDown) {
         movementX = "left";
         player.anims.play('left', true);
