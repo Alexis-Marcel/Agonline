@@ -16,7 +16,7 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-         //throw "CONNEXION A LA BASE IMPOSSIBLE\n\n" + err;
+         throw "CONNEXION A LA BASE IMPOSSIBLE\n\n" + err;
      }
  });
 
@@ -54,6 +54,11 @@ class Quizz extends Game {
 
 
     startGame() {
+
+        if(this.users.length<1){
+            this.socketCreateur.emit("alert", `Le nombre de joueurs est insuffisant pour lancer la partie.`);
+            return;
+        }
         
         super.startGame();
         

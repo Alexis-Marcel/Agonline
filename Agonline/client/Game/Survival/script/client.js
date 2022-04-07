@@ -73,10 +73,8 @@ function create() {
         x: width/2,
         y: height*0.75,
         radius: 100,
-        // dir: '8dir',
-        // forceMin: 16,
-        // fixed: true,
-        // enable: true
+        base: this.add.circle(0, 0, 100, 0x888888),
+        thumb: this.add.circle(0, 0, 50, 0xcccccc),
     });
 
     cursors = joystick.createCursorKeys();
