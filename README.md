@@ -1,6 +1,6 @@
 # Bienvenue sur Agonline !
 
-Ce projet a été réalisé dans le cadre de mon DUT Informatique à l'IUT Charlemagne.
+Ce projet a été réalisé dans le cadre du projet tutoré de deuxième année de DUT Informatique à l'IUT Charlemagne.
 
 Sujet 14 : Piccadilly Game
 
