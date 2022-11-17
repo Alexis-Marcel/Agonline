@@ -8,17 +8,11 @@ Ce sujet a pour objectif de créer un site web interactif permettant de lancer d
 
 ## Image du projet 
 
-<div style="display:flex">
-<div style="width:60%">
+<div style="display:flex;">
 
-![Quizz](/Document/quizz.png)
-</div>
+<img src="/Document/quizz.png" style = "width:40%">
 
-<div style="width:60%">
-
-![Survival](/Document/survival.png)
-
-</div>
+<img src="/Document/survival.png" style = "width:40%">
 
 </div>
 
