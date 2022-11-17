@@ -6,6 +6,23 @@ Sujet 14 : Piccadilly Game
 
 Ce sujet a pour objectif de créer un site web interactif permettant de lancer divers mini-jeux sur un écran principal (écran de type ordinateur ou plus grand de préférence) qui pourra être rejoint par n’importe qui via un code ou qr code. Chaque personne rejoignant le mini jeu pourra interagir sur l’écran principal avec son écran qui sera de préférence un écran de smartphone.
 
+## Image du projet 
+
+<div style="display:flex">
+<div style="width:60%">
+
+![Quizz](/Document/quizz.png)
+</div>
+
+<div style="width:60%">
+
+![Survival](/Document/survival.png)
+
+</div>
+
+</div>
+
+
 ## Liens utiles
                                                                                                                
 Lien hébèrgement temporaire du projet : [http://agonline.alwaysdata.net](http://agonline.alwaysdata.net)                                   
