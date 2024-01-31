@@ -1,72 +1,68 @@
-# Bienvenue sur Agonline !
+# Welcome to Agonline!
 
-Ce projet a été réalisé dans le cadre du projet tutoré de deuxième année de DUT Informatique à l'IUT Charlemagne.
+This project was developed as part of the second-year tutored project in the Computer Science Degree at IUT Charlemagne.
 
-Sujet 14 : Piccadilly Game
+**Project 14: Piccadilly Game**
 
-Ce sujet a pour objectif de créer un site web interactif permettant de lancer divers mini-jeux sur un écran principal (écran de type ordinateur ou plus grand de préférence) qui pourra être rejoint par n’importe qui via un code ou qr code. Chaque personne rejoignant le mini jeu pourra interagir sur l’écran principal avec son écran qui sera de préférence un écran de smartphone.
+The goal of this project is to create an interactive website capable of launching various mini-games on a main screen (preferably a computer screen or larger) that can be joined by anyone using a code or QR code. Each participant joining the mini-game can interact with the main screen using their smartphone screen.
 
-## Image du projet 
+## Project Images
 
-<div style="display:flex;">
+<div style="display:flex; justify-content: space-between;">
 
-<img src="/Document/quizz.png" style = "width:40%">
+<img src="/Document/quizz.png" style="width:48%;">
 
-<img src="/Document/survival.png" style = "width:40%">
+<img src="/Document/survival.png" style="width:48%;">
 
 </div>
 
+## Useful Links
 
-## Liens utiles
-                                                                                                               
-Lien hébèrgement temporaire du projet : [http://agonline.alwaysdata.net](http://agonline.alwaysdata.net)                                   
-                                                                                                            
-Collaboration github : [https://github.com/univ-lorraine-iut-charlemagne/S3A_S14_LEBLANC_MARCEL_PRULIERE](https://github.com/univ-lorraine-iut-charlemagne/S3A_S14_LEBLANC_MARCEL_PRULIERE)
-                                                                                                                    
-Collaboration trello : [https://trello.com/b/WlFdFO2p/s3as14leblancmarcelpruliere](https://trello.com/b/WlFdFO2p/s3as14leblancmarcelpruliere)                         
-                       
-## Pré-requis
+Temporary hosting link for the project: [http://agonline.alwaysdata.net](http://agonline.alwaysdata.net)
 
-Tout d'abord, vous devez télécharger Node.js : [https://nodejs.org/](https://nodejs.org/en/)
+GitHub collaboration: [https://github.com/univ-lorraine-iut-charlemagne/S3A_S14_LEBLANC_MARCEL_PRULIERE](https://github.com/univ-lorraine-iut-charlemagne/S3A_S14_LEBLANC_MARCEL_PRULIERE)
+
+Trello collaboration: [https://trello.com/b/WlFdFO2p/s3as14leblancmarcelpruliere](https://trello.com/b/WlFdFO2p/s3as14leblancmarcelpruliere)
+
+## Prerequisites
+
+First, you need to download Node.js: [https://nodejs.org/](https://nodejs.org/en/)
 
 ### Installation
 
-Pour installer les frameworks et plugins requis suivez les étapes suivantes : 
+Follow these steps to install the required frameworks and plugins:
 
-* _Installation d'[Express.js](https://expressjs.com/fr/)_ : Executez la commande ``npm install express --save`` dans votre terminal.
-* _Installation de [Socket.io](https://socket.io/fr/)_ : Executez la commande ``npm install socket.io`` dans votre terminal.
-*  _Installation de [Phaser3-rex-plugins](https://www.npmjs.com/package/phaser3-rex-plugins)_ : Executez la commande ``npm i phaser3-rex-plugins`` dans votre terminal.
-* (Facultatif) _Installation de [Nodemon](https://www.npmjs.com/package/nodemon)_ : Executez la commande ``npm install nodemon -g`` dans votre terminal.
+- **Express.js Installation**: Run the command `npm install express --save` in your terminal.
+- **Socket.io Installation**: Run the command `npm install socket.io` in your terminal.
+- **Phaser3-rex-plugins Installation**: Run the command `npm i phaser3-rex-plugins` in your terminal.
+- (Optional) **Nodemon Installation**: Run the command `npm install nodemon -g` in your terminal.
 
+## Getting Started
 
-## Démarrage
-   
-Executez la commande ``nodemon serveur/serveur.js`` dans votre terminal **à la racine du projet** pour lancer le serveur.
-                     
-## Technologies utilisées :
+Execute the command `nodemon serveur/serveur.js` in your terminal **at the root of the project** to launch the server.
 
-_FrontEnd_:
+## Technologies Used:
 
-* [HTML5](https://developer.mozilla.org/fr/docs/Glossary/HTML5) - La dernière version stable du [HTML](https://developer.mozilla.org/fr/docs/Glossary/HTML)
-* [CSS3](https://developer.mozilla.org/fr/docs/Web/CSS) - Langage principal du Web ouvert
-* [Bootstrap](https://getbootstrap.com/docs/5.1/getting-started/introduction/) - Collection d'outils utiles à la création du design de sites et d'applications web.
-* [Phaser 3](https://phaser.io/phaser3) - Framework de jeu HTML5 open source, gratuit qui offre un rendu WebGL et Canvas sur les navigateurs Web.
-* [Phaser3-rex-plugins](https://www.npmjs.com/package/phaser3-rex-plugins) - Plugin additionnel à [Phaser](https://phaser.io/phaser3).
-* [Javascript](https://developer.mozilla.org/fr/docs/Web/JavaScript) - Langage de script léger, orienté objet, principalement connu comme le langage de script des pages web.
-* [Jquery](https://jquery.com/) - Bibliothèque JavaScript libre et multiplateforme créée pour faciliter l'écriture de scripts côté client.
+**FrontEnd**:
 
-_BackEnd_:
+- [HTML5](https://developer.mozilla.org/en/docs/Web/HTML/HTML5) - The latest stable version of HTML
+- [CSS3](https://developer.mozilla.org/en/docs/Web/CSS) - The primary language for styling on the Open Web
+- [Bootstrap](https://getbootstrap.com/docs/5.1/getting-started/introduction/) - A toolkit for designing websites and web applications
+- [Phaser 3](https://phaser.io/phaser3) - Free, open-source HTML5 game framework offering WebGL and Canvas rendering across web browsers
+- [Phaser3-rex-plugins](https://www.npmjs.com/package/phaser3-rex-plugins) - Additional plugin for Phaser
+- [JavaScript](https://developer.mozilla.org/en/docs/Web/JavaScript) - A lightweight, object-oriented scripting language, widely known as the scripting language for web pages
+- [JQuery](https://jquery.com/) - A free, multi-platform JavaScript library designed to simplify client-side scripting
 
-* [Node.js](https://nodejs.org/en/) - Plateforme logicielle libre en JavaScript, orientée vers les applications réseau.
-* [Socket.io](https://socket.io/fr/) - Bibliothèque JavaScript pilotée par les événements pour les applications Web en temps réel. 
-* [Express.js](https://expressjs.com/fr/) - Framework pour construire des applications web basées sur Node.js.
-* [Nodemon](https://www.npmjs.com/package/nodemon) - Utilitaire d'interface de ligne de commande qui surveille le système de fichiers et redémarre automatiquement le processus.
-* [MySQL](https://www.mysql.com/fr/) - Système de gestion de bases de données relationnelles.
+**BackEnd**:
 
+- [Node.js](https://nodejs.org/en/) - Open-source JavaScript software platform for network applications
+- [Socket.io](https://socket.io/) - Event-driven JavaScript library for real-time web applications
+- [Express.js](https://expressjs.com/fr/) - Framework for building web applications based on Node.js
+- [Nodemon](https://www.npmjs.com/package/nodemon) - CLI utility that monitors the file system and automatically restarts the process
+- [MySQL](https://www.mysql.com/fr/) - Relational database management system
 
-## Auteurs
+## Authors
 
-* **Alexis MARCEL** _alias_ [@WeriloZzz](https://github.com/WeriloZzz)
-* **Justine PRULIERE** _alias_ [@Sunofokkusu](https://github.com/Sunofokkusu) 
-* **Lilian LEBLANC** _alias_ [@Lloyd](https://github.com/LIIoyd)
-
+- **Alexis MARCEL** _alias_ [@WeriloZzz](https://github.com/WeriloZzz)
+- **Justine PRULIERE** _alias_ [@Sunofokkusu](https://github.com/Sunofokkusu) 
+- **Lilian LEBLANC** _alias_ [@Lloyd](https://github.com/LIIoyd)
